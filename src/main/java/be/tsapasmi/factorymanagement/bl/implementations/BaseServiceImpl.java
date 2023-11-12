@@ -1,5 +1,7 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
+
+
 import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
 import be.tsapasmi.factorymanagement.bl.interfaces.BaseService;
 import be.tsapasmi.factorymanagement.domain.entities.BaseEntity;
@@ -14,8 +16,8 @@ public abstract class BaseServiceImpl<T extends BaseEntity,K extends Long,R exte
     public abstract Class<T> getResourceClass();
 
     @Override
-    public void create(T entity) {
-        getRepository().save(entity);
+    public T create(T entity) {
+        return getRepository().save(entity);
     }
 
     @Override

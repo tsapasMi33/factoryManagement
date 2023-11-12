@@ -33,7 +33,7 @@ public class User extends BaseEntity implements UserDetails {
     private boolean enabled;
 
     @OneToMany(mappedBy = "user")
-    private List<ProductState> jobs;
+    private List<ProductStep> jobs;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,14 +1,14 @@
 package be.tsapasmi.factorymanagement.web.models.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class ErrorDTO implements Serializable {
 

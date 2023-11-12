@@ -19,8 +19,4 @@ public interface ClientMapper {
 
     Client toEntity(ClientForm form);
 
-    Client toEntity(ClientDTO clientDTO);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Client partialUpdate(ClientDTO clientDTO, @MappingTarget Client client);
 }

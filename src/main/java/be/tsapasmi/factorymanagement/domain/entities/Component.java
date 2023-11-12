@@ -29,7 +29,5 @@ public class Component extends BaseEntity {
 
     private Integer width;
 
-    private int qty;
-
     private double price;
 }

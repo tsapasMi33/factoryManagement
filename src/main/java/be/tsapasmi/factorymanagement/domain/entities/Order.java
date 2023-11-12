@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "orders")
 public class Order extends BaseEntity {
 
     private LocalDate orderDate;
@@ -24,7 +25,7 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DeliveryPreference deliveryPreference;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<Product> products;
 
     @ManyToOne

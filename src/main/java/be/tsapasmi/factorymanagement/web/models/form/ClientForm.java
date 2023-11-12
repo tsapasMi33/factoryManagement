@@ -1,10 +1,16 @@
 package be.tsapasmi.factorymanagement.web.models.form;
 
 import be.tsapasmi.factorymanagement.domain.entities.Address;
+import be.tsapasmi.factorymanagement.domain.entities.Client;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+/**
+ * DTO for {@link Client}
+ */
+@Getter
+@Setter
 public class ClientForm {
 
     @NotBlank

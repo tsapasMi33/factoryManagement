@@ -2,11 +2,9 @@ package be.tsapasmi.factorymanagement.domain.entities;
 
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,18 +12,27 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductState extends BaseEntity {
+public class ProductStep extends BaseEntity {
 
+    @ManyToOne
+    private Product product;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Step step;
 
     @Column(nullable = false)
     private LocalDateTime start;
 
-    private LocalDateTime end;
+    private LocalDateTime finish;
 
-    private int minutesPassed;
+    @Column(nullable = false)
+    private Duration duration;
+
+    @Column(nullable = false)
+    private boolean finished;
 
     @ManyToOne
     private User user;
+
 }

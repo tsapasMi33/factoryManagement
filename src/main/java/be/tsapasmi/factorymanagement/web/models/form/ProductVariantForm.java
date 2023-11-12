@@ -1,12 +1,18 @@
 package be.tsapasmi.factorymanagement.web.models.form;
 
+import be.tsapasmi.factorymanagement.domain.entities.ProductVariant;
 import be.tsapasmi.factorymanagement.domain.enums.Material;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+/**
+ * DTO for {@link ProductVariant}
+ */
+@Getter
+@Setter
 public class ProductVariantForm {
 
     private List<Step> productionPath;
