@@ -12,15 +12,12 @@ import java.util.List;
 
 @Service
 @Getter
-@AllArgsConstructor
 public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, ProductStepRepository> implements ProductStepService {
 
-    private final ProductStepRepository repository;
-
-    @Override
-    public Class<ProductStep> getResourceClass() {
-        return ProductStep.class;
+    public ProductStepServiceImpl(ProductStepRepository repository) {
+        super(repository, ProductStep.class);
     }
+
 
     @Override
     public List<ProductStep> getAllStepsForProduct(long id) {

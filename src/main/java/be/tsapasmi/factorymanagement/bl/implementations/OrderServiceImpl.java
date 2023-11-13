@@ -21,10 +21,13 @@ import java.util.List;
 
 @Service
 @Getter
-@AllArgsConstructor
 public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepository> implements OrderService {
 
-    private final OrderRepository repository;
+    public OrderServiceImpl(OrderRepository repo, ProductStepService productStepService) {
+        super(repo, Order.class);
+        this.productStepService = productStepService;
+    }
+
     private final ProductStepService productStepService;
 
     @Override
@@ -36,7 +39,15 @@ public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepositor
     public Order create(Order entity) {
         entity.getProducts()
                 .forEach(product -> {
-                    List<ProductStep> steps = new ArrayList<>(List.of(new ProductStep(product, product.getCurrentStep(), LocalDateTime.now(), LocalDateTime.now(), Duration.ofSeconds(0), true, null)));
+                    ProductStep step = new ProductStep();
+                    step.setProduct(product);
+                    step.setStep(product.getCurrentStep());
+                    step.setStart(LocalDateTime.now());
+                    step.setFinish(LocalDateTime.now());
+                    step.setDuration(Duration.ofSeconds(0));
+                    step.setFinished(true);
+                    step.setPaused(false);
+                    List<ProductStep> steps = new ArrayList<>(List.of(step));
                     product.setSteps(steps);
         });
         return super.create(entity);

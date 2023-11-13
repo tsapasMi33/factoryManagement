@@ -10,13 +10,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Getter
-@AllArgsConstructor
 public class ProductFamilyServiceImpl extends BaseServiceImpl<ProductFamily,Long, ProductFamilyRepository> implements ProductFamilyService {
 
-    private final ProductFamilyRepository repository;
-
-    @Override
-    public Class<ProductFamily> getResourceClass() {
-        return ProductFamily.class;
+    public ProductFamilyServiceImpl(ProductFamilyRepository repo) {
+        super(repo, ProductFamily.class);
     }
+
 }

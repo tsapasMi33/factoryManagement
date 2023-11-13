@@ -17,7 +17,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
-public class User extends BaseEntity implements UserDetails {
+public class User extends BaseEntity<Long> implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -32,8 +36,10 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private boolean enabled;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "createdBy")
     private List<ProductStep> jobs;
+
+    private Double costPerMinute;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

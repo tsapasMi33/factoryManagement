@@ -28,24 +28,24 @@ public class OrderController {
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<OrderDTO> getProductVariant(@PathVariable long id) {
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable long id) {
         return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
     }
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> createProductVariant(@Valid @RequestBody OrderForm form, Authentication auth) {
+    public ResponseEntity<HttpStatus> createOrder(@Valid @RequestBody OrderForm form) {
         service.create(mapper.toEntity(form));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<HttpStatus> updateProductVariant(@PathVariable long id, @Valid @RequestBody OrderForm form) {
+    public ResponseEntity<HttpStatus> updateOrder(@PathVariable long id, @Valid @RequestBody OrderForm form) {
         service.update(id, mapper.toEntity(form));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<HttpStatus> deleteProductVariant(@PathVariable long id) {
+    public ResponseEntity<HttpStatus> deleteOrder(@PathVariable long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

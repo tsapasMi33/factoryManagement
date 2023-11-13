@@ -11,14 +11,10 @@ import java.util.List;
 
 @Service
 @Getter
-@AllArgsConstructor
 public class ComponentServiceImpl extends BaseServiceImpl<Component,Long, ComponentRepository> implements ComponentService {
 
-    private final ComponentRepository repository;
-
-    @Override
-    public Class<Component> getResourceClass() {
-        return Component.class;
+    public ComponentServiceImpl(ComponentRepository repo) {
+        super(repo, Component.class);
     }
 
     @Override

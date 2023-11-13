@@ -14,7 +14,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product extends BaseEntity {
+public class Product extends BaseEntity<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String comments;
 
@@ -27,6 +31,12 @@ public class Product extends BaseEntity {
     @ManyToOne
     private Order order;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     private List<ProductStep> steps;
+
+    @ManyToOne
+    private Batch batch;
+
+    @ManyToOne
+    private Packet packet;
 }

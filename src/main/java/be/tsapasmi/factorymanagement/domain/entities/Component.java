@@ -1,9 +1,8 @@
 package be.tsapasmi.factorymanagement.domain.entities;
 
 import be.tsapasmi.factorymanagement.domain.enums.Material;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import be.tsapasmi.factorymanagement.domain.enums.MaterialType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +13,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Component extends BaseEntity {
+public class Component extends BaseEntity<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String name;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private MaterialType type;
 
     @Enumerated(EnumType.STRING)
     private Material material;

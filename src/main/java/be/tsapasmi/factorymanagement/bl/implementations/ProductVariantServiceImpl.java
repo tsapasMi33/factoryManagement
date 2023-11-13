@@ -10,14 +10,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Getter
-@AllArgsConstructor
 public class ProductVariantServiceImpl extends BaseServiceImpl<ProductVariant,Long, ProductVariantRepository> implements ProductVariantService {
 
-    private final ProductVariantRepository repository;
-
-
-    @Override
-    public Class<ProductVariant> getResourceClass() {
-        return ProductVariant.class;
+    public ProductVariantServiceImpl(ProductVariantRepository repo) {
+        super(repo, ProductVariant.class);
     }
+
 }

@@ -15,7 +15,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductVariant extends BaseEntity {
+public class ProductVariant extends BaseEntity<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
@@ -43,6 +47,6 @@ public class ProductVariant extends BaseEntity {
     @ManyToOne
     private ProductFamily productFamily;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Component> components;
 }

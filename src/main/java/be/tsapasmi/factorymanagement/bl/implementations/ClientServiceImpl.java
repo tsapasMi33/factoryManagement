@@ -14,14 +14,12 @@ import java.util.List;
 
 @Service
 @Getter
-@AllArgsConstructor
 public class ClientServiceImpl extends BaseServiceImpl<Client,Long, ClientRepository> implements ClientService {
 
-    private final ClientRepository repository;
 
-
-    @Override
-    public Class<Client> getResourceClass() {
-        return Client.class;
+    public ClientServiceImpl(ClientRepository repo) {
+        super(repo, Client.class);
     }
+
+
 }

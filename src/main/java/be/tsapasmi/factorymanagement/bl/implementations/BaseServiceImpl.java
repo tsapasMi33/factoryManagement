@@ -5,15 +5,23 @@ package be.tsapasmi.factorymanagement.bl.implementations;
 import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
 import be.tsapasmi.factorymanagement.bl.interfaces.BaseService;
 import be.tsapasmi.factorymanagement.domain.entities.BaseEntity;
+import lombok.Getter;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Service
-public abstract class BaseServiceImpl<T extends BaseEntity,K extends Long,R extends JpaRepository<T,K>> implements BaseService<T,K> {
 
-    public abstract R getRepository();
-    public abstract Class<T> getResourceClass();
+@Getter
+public abstract class BaseServiceImpl<T extends BaseEntity<K>, K,R extends JpaRepository<T,K>> implements BaseService<T,K> {
+
+
+    protected final R repository;
+    protected final Class<? extends T> resourceClass;
+
+    BaseServiceImpl(R repository, Class<? extends T> resourceClass){
+        this.repository = repository;
+        this.resourceClass = resourceClass;
+    }
+
 
     @Override
     public T create(T entity) {

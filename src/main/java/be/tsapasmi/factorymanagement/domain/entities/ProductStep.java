@@ -3,6 +3,7 @@ package be.tsapasmi.factorymanagement.domain.entities;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -12,7 +13,11 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductStep extends BaseEntity {
+public class ProductStep extends BaseEntity<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     private Product product;
@@ -32,7 +37,6 @@ public class ProductStep extends BaseEntity {
     @Column(nullable = false)
     private boolean finished;
 
-    @ManyToOne
-    private User user;
-
+    @Column(nullable = false)
+    private boolean paused;
 }

@@ -13,5 +13,5 @@ import java.util.List;
  */
 public record ProductStepDTO(Long id, Long productId, List<Step> productVariantProductionPath, Step step,
                              LocalDateTime start, LocalDateTime finish, Duration duration, boolean finished,
-                             String userUsername) implements Serializable {
+                             String userUsername, boolean paused) implements Serializable {
 }

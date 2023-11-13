@@ -1,7 +1,6 @@
 package be.tsapasmi.factorymanagement.domain.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +13,14 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Batch extends BaseEntity {
+public class Batch extends BaseEntity<Long> {
 
-    // TODO code generated automatically
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String code;
 
-    @OneToMany
+    @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL)
     private List<Product> products;
 }

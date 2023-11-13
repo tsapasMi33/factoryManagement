@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
+import be.tsapasmi.factorymanagement.domain.enums.Step;
 import be.tsapasmi.factorymanagement.web.mappers.ProductMapper;
 import be.tsapasmi.factorymanagement.web.models.dto.ProductDTO;
 import be.tsapasmi.factorymanagement.web.models.form.ProductForm;
@@ -23,8 +24,12 @@ public class ProductController {
     private final ProductMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        return ResponseEntity.ok(mapper.toDTO(service.getAll()));
+    public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam(required = false)String step,
+                                                           @RequestParam(required = false)Long batchId,
+                                                           @RequestParam(required = false)Long packetId,
+                                                           @RequestParam(required = false)Long productFamilyId
+                                                           ) {
+        return ResponseEntity.ok(mapper.toDTO(service.findAllByCriteria(step,batchId,packetId,productFamilyId)));
     }
 
     @GetMapping("/{id:^[0-9]+$}")

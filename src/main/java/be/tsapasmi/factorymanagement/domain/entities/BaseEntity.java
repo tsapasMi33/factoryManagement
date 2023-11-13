@@ -9,31 +9,35 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-//@EntityListeners(AuditingEntityListener.class) // TODO implement
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class BaseEntity {
+public abstract class BaseEntity<K> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    public abstract K getId();
+    public abstract void setId(K id);
 
-//    @CreatedBy
-//    protected String createdBy;
-//
-//    @CreatedDate
-//    @Column(nullable = false, updatable = false)
-//    protected LocalDateTime createdDate;
-//
-//    @LastModifiedBy
-//    protected String lastModifiedBy;
-//
-//    @LastModifiedDate
-//    protected LocalDateTime lastModifiedDate;
+    @CreatedBy
+    @ManyToOne
+    @JoinColumn(nullable = true)
+    protected User createdBy;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    protected LocalDateTime createdDate;
+
+    @LastModifiedBy
+    @ManyToOne
+    protected User lastModifiedBy;
+
+    @LastModifiedDate
+    protected LocalDateTime lastModifiedDate;
+
 }
