@@ -14,6 +14,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,30 +42,27 @@ public class ProductServiceImpl extends BaseServiceImpl<Product,Long,ProductRepo
         this.productFamilyService = productFamilyService;
     }
 
-    @Override
-    public List<Product> findAllByCriteria(String step, Long batchId, Long packetId, Long productFamilyId) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Product> query = criteriaBuilder.createQuery(Product.class);
-        Root<Product> root = query.from(Product.class);
-        List<Predicate> predicates = new ArrayList<>();
 
-        if (step != null) {
-            predicates.add(criteriaBuilder.equal(root.get("currentStep"),Step.valueOf(step)));
-        }
-        if (batchId != null) {
-            predicates.add(criteriaBuilder.equal(root.get("batch"),batchService.getOne(batchId)));
-        }
-        if (packetId != null) {
-            predicates.add(criteriaBuilder.equal(root.get("packet"), packetService.getOne(packetId)));
-        }
-        if (productFamilyId != null) {
-            predicates.add(criteriaBuilder.equal(root.get("variant").get("productFamily"), productFamilyService.getOne(productFamilyId)));
-        }
+    public List<Product> findAllByCriteria(Step step, Long batchId, Long packetId, Long productFamilyId) {
+        Specification<Product> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
-        query.where(predicates.toArray(new Predicate[0]));
+            if (step != null) {
+                predicates.add(criteriaBuilder.equal(root.get("currentStep"), step));
+            }
+            if (batchId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("batch"), batchService.getOne(batchId)));
+            }
+            if (packetId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("packet"), packetService.getOne(packetId)));
+            }
+            if (productFamilyId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("variant").get("productFamily"), productFamilyService.getOne(productFamilyId)));
+            }
 
-        TypedQuery<Product> typedQuery = entityManager.createQuery(query);
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
 
-        return typedQuery.getResultList();
+        return repository.findAll(specification);
     }
 }

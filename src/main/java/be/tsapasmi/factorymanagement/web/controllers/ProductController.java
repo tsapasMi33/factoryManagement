@@ -24,7 +24,7 @@ public class ProductController {
     private final ProductMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam(required = false)String step,
+    public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam(required = false)Step step,
                                                            @RequestParam(required = false)Long batchId,
                                                            @RequestParam(required = false)Long packetId,
                                                            @RequestParam(required = false)Long productFamilyId

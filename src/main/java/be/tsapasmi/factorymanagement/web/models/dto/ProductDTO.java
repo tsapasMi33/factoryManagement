@@ -11,5 +11,6 @@ import java.time.LocalDate;
  */
 public record ProductDTO(Long id, String comments, ProductVariantDTO variant, Long orderId,
                          LocalDate orderPlannedDeliveryDate, Long orderClientId,
-                         String orderClientName, Step currentStep) implements Serializable {
+                         String orderClientName, Step currentStep, Long batchId, String batchCode, Long packetId,
+                         String packetCode) implements Serializable {
 }

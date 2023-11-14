@@ -6,5 +6,5 @@ import be.tsapasmi.factorymanagement.domain.enums.Step;
 import java.util.List;
 
 public interface ProductService extends BaseService<Product,Long> {
-    public List<Product> findAllByCriteria(String step, Long batchId, Long packetId, Long productFamilyId);
+    public List<Product> findAllByCriteria(Step step, Long batchId, Long packetId, Long productFamilyId);
 }
