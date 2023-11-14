@@ -37,19 +37,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepositor
 
     @Override
     public Order create(Order entity) {
+        Order created = super.create(entity);
         entity.getProducts()
                 .forEach(product -> {
-                    ProductStep step = new ProductStep();
-                    step.setProduct(product);
-                    step.setStep(product.getCurrentStep());
-                    step.setStart(LocalDateTime.now());
-                    step.setFinish(LocalDateTime.now());
-                    step.setDuration(Duration.ofSeconds(0));
-                    step.setFinished(true);
-                    step.setPaused(false);
-                    List<ProductStep> steps = new ArrayList<>(List.of(step));
-                    product.setSteps(steps);
+                    product.getSteps().add(productStepService.encodeProduct(product));
         });
-        return super.create(entity);
+        return created;
     }
 }

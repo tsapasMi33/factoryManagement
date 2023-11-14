@@ -1,9 +1,11 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.BatchService;
+import be.tsapasmi.factorymanagement.bl.interfaces.ProductStepService;
 import be.tsapasmi.factorymanagement.dal.BatchRepository;
 import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
+import be.tsapasmi.factorymanagement.domain.entities.ProductStep;
 import be.tsapasmi.factorymanagement.domain.entities.ProductVariant;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import jakarta.persistence.EntityManager;
@@ -15,6 +17,8 @@ import lombok.Getter;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +26,11 @@ import java.util.List;
 @Getter
 public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepository> implements BatchService {
 
-    private final EntityManager entityManager;
-    public BatchServiceImpl(BatchRepository repository, EntityManager entityManager) {
+    private final ProductStepService productStepService;
+
+    public BatchServiceImpl(BatchRepository repository, ProductStepService productStepService) {
         super(repository, Batch.class);
-        this.entityManager = entityManager;
+        this.productStepService = productStepService;
     }
 
     @Override
@@ -50,28 +55,16 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepositor
 
     @Override
     public List<Batch> findAllToCut() {
-        Specification<Batch> specification = ((root, query, criteriaBuilder) -> {
-            Join<Batch,Product> productJoin = root.join("products");
-            Join<Product, ProductVariant> variantJoin = productJoin.join("variant");
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            predicates.add(criteriaBuilder.isTrue())
-        })
-
-        return null;
-    }
-
-    private Predicate isCurrentStepBefore(Step currentStep,
-                                          Step targetStep,
-                                          List<Step> productionPath) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-
-        Expression<Integer> currentIndex = cb.indexOf(productionPath, currentStep);
+        return repository.findAllForStep(Step.CUT);
     }
 
     @Override
     public Batch create(Batch entity) {
+        entity.getProducts()
+                .forEach(product -> {
+                    product.getSteps().add(productStepService.putInProduction(product));
+
+                });
         Batch created = super.create(entity);
         repository.updateProducts(created, created.getProducts());
         return created;

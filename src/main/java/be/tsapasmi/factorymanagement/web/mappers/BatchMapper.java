@@ -32,6 +32,7 @@ public abstract class BatchMapper {
 
     public abstract List<BatchDTO> toDTO(List<Batch> batches);
 
+    @Named("batchFormToEntity")
     @Mapping(target = "products", source = "products", qualifiedByName = "mapProducts")
     @Mapping(target = "code", expression = "java(generateCode())")
     public Batch toEntity(BatchForm form) {
@@ -63,5 +64,10 @@ public abstract class BatchMapper {
         }
         long code = Long.parseLong(lastBatch.getCode());
         return String.valueOf(++code);
+    }
+
+    @IterableMapping(qualifiedByName = "batchFormToEntity")
+    public List<Batch> toEntity(List<BatchForm> forms) {
+        return forms.stream().map(this::toEntity).toList();
     }
 }

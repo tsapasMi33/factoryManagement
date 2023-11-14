@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,4 +40,8 @@ public class Product extends BaseEntity<Long> {
 
     @ManyToOne
     private Packet packet;
+
+    {
+        steps = new ArrayList<>();
+    }
 }

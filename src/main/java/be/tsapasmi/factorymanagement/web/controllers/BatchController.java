@@ -32,8 +32,8 @@ public class BatchController {
     }
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> createBatch(@Valid @RequestBody BatchForm form) {
-        service.create(mapper.toEntity(form));
+    public ResponseEntity<HttpStatus> createBatch(@Valid @RequestBody List<BatchForm> forms) {
+        mapper.toEntity(forms).forEach(service::create);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -51,21 +51,21 @@ public class BatchController {
 
     @GetMapping("/to-cut")
     public ResponseEntity<List<BatchDTO>> getBatches() {
-        return ResponseEntity.ok(mapper.toDTO());
+        return ResponseEntity.ok(mapper.toDTO(service.findAllToCut()));
     }
-
-    @GetMapping("/to-bend")
-    public ResponseEntity<List<BatchDTO>> getBatches() {
-        return ResponseEntity.ok(mapper.toDTO());
-    }
-
-    @GetMapping("/to-combine")
-    public ResponseEntity<List<BatchDTO>> getBatches() {
-        return ResponseEntity.ok(mapper.toDTO());
-    }
-
-    @GetMapping("/to-weld")
-    public ResponseEntity<List<BatchDTO>> getBatches() {
-        return ResponseEntity.ok(mapper.toDTO());
-    }
+//
+//    @GetMapping("/to-bend")
+//    public ResponseEntity<List<BatchDTO>> getBatches() {
+//        return ResponseEntity.ok(mapper.toDTO());
+//    }
+//
+//    @GetMapping("/to-combine")
+//    public ResponseEntity<List<BatchDTO>> getBatches() {
+//        return ResponseEntity.ok(mapper.toDTO());
+//    }
+//
+//    @GetMapping("/to-weld")
+//    public ResponseEntity<List<BatchDTO>> getBatches() {
+//        return ResponseEntity.ok(mapper.toDTO());
+//    }
 }
