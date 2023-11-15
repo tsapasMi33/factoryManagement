@@ -8,7 +8,11 @@ import java.util.List;
 public interface BatchService extends BaseService<Batch,Long> {
     Batch getLastBatch();
 
-    List<Batch> findAllByCriteria(Step step);
+    List<Batch> findAllByCriteria(Step currentStep, Step nextStep);
 
-    List<Batch> findAllToCut();
+    Batch startStep(Step targetStep, Long batchId);
+
+    void pauseStep(Step targetStep, Long batchId);
+
+    void finishStep(Step targetStep, Long batchId);
 }

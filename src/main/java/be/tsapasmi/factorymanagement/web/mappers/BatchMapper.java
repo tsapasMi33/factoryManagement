@@ -5,6 +5,7 @@ import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
 import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.web.models.dto.BatchDTO;
+import be.tsapasmi.factorymanagement.web.models.dto.ProductDTO;
 import be.tsapasmi.factorymanagement.web.models.form.BatchForm;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public abstract class BatchMapper {
 
     protected ProductService productService;
     protected BatchService batchService;
+    protected ProductMapper productMapper;
 
     @Autowired
     public void setProductService(ProductService productService) {
@@ -27,7 +29,12 @@ public abstract class BatchMapper {
     public void setBatchService(BatchService batchService) {
         this.batchService = batchService;
     }
+    @Autowired
+    public void setProductMapper(ProductMapper productMapper) {
+        this.productMapper = productMapper;
+    }
 
+    @Mapping(source = "products", target = "products", qualifiedByName = "mapProductsToProductDTOs")
     public abstract BatchDTO toDTO(Batch batch);
 
     public abstract List<BatchDTO> toDTO(List<Batch> batches);
@@ -53,6 +60,12 @@ public abstract class BatchMapper {
                 .toList();
     }
 
+    @Named("mapProductsToProductDTOs")
+    protected List<ProductDTO> mapProductsToProductDTOs(List<Product> products){
+        return productMapper.toDTO(products);
+    }
+
+
     protected String generateCode() {
         Batch lastBatch = batchService.getLastBatch();
         if (lastBatch == null || lastBatch.getCreatedDate().toLocalDate().isBefore(LocalDate.now())) {
@@ -63,11 +76,7 @@ public abstract class BatchMapper {
                     "001";
         }
         long code = Long.parseLong(lastBatch.getCode());
-        return String.valueOf(++code);
-    }
-
-    @IterableMapping(qualifiedByName = "batchFormToEntity")
-    public List<Batch> toEntity(List<BatchForm> forms) {
-        return forms.stream().map(this::toEntity).toList();
+        code++;
+        return String.valueOf(code);
     }
 }

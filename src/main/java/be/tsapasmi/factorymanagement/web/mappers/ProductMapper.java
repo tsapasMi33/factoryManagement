@@ -41,7 +41,6 @@ public abstract class ProductMapper {
     public abstract List<ProductDTO> toDTO(List<Product> product);
 
     @Mapping(target = "variant", source = "variantId", qualifiedByName = "mapProductVariant")
-    @Mapping(target = "currentStep", expression = "java(Step.ENCODED)")
     public abstract Product toEntity(ProductForm form);
 
 

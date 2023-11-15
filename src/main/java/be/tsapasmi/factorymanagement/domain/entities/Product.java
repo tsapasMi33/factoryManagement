@@ -26,6 +26,9 @@ public class Product extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private Step currentStep;
 
+    @Enumerated(EnumType.STRING)
+    private Step nextStep;
+
     @ManyToOne
     private ProductVariant variant;
 
@@ -43,5 +46,16 @@ public class Product extends BaseEntity<Long> {
 
     {
         steps = new ArrayList<>();
+        nextStep = Step.ENCODED;
+    }
+
+    public void doNextStep() {
+        currentStep = nextStep;
+        int nextStepIndex = variant.getProductionPath().indexOf(nextStep) + 1;
+        if (nextStepIndex < variant.getProductionPath().size()) {
+            nextStep = variant.getProductionPath().get(nextStepIndex);
+        } else {
+            nextStep = null;
+        }
     }
 }

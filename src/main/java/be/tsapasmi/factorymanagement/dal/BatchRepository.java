@@ -33,21 +33,6 @@ public interface BatchRepository extends JpaRepository<Batch,Long> {
 
     List<Batch> findAll(Specification<Batch> specification);
 
-    @Query(nativeQuery = true, value = """
-    SELECT b.created_by_id, b.created_date, b.id, b.last_modified_by_id, b.last_modified_date, b.code
-    FROM batch b
-    LEFT JOIN product p ON b.id = p.batch_id
-    LEFT JOIN product_variant pv ON p.variant_id = pv.id
-    LEFT JOIN product_variant_steps pvs ON pv.id = pvs.product_variant_id
-    WHERE p.current_step = pvs.production_path AND 'CUT' = (
-        SELECT production_path
-        FROM product_variant_steps pvs2
-        WHERE pvs2.product_variant_id = pv.id
-        AND pvs2.step_order = pvs.step_order + 1
-    )
-""")
-    List<Batch> findAllForStep(Step targetStep);
-
 }
 
 

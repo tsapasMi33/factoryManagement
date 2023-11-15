@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.OrderService;
+import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductStepService;
 import be.tsapasmi.factorymanagement.dal.ComponentRepository;
 import be.tsapasmi.factorymanagement.dal.OrderRepository;
@@ -23,12 +24,12 @@ import java.util.List;
 @Getter
 public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepository> implements OrderService {
 
-    public OrderServiceImpl(OrderRepository repo, ProductStepService productStepService) {
+    public OrderServiceImpl(OrderRepository repo, ProductService productService) {
         super(repo, Order.class);
-        this.productStepService = productStepService;
+        this.productService = productService;
     }
 
-    private final ProductStepService productStepService;
+    private final ProductService productService;
 
     @Override
     public Class<Order> getResourceClass() {
@@ -39,9 +40,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepositor
     public Order create(Order entity) {
         Order created = super.create(entity);
         entity.getProducts()
-                .forEach(product -> {
-                    product.getSteps().add(productStepService.encodeProduct(product));
-        });
+                .forEach(product -> productService.startStep(Step.ENCODED, product));
         return created;
     }
 }

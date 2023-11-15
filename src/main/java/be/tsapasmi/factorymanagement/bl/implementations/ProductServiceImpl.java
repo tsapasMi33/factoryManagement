@@ -1,7 +1,9 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
+import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
 import be.tsapasmi.factorymanagement.bl.interfaces.*;
 import be.tsapasmi.factorymanagement.dal.ProductRepository;
+import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.domain.entities.ProductVariant;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
@@ -23,35 +25,32 @@ import java.util.List;
 
 @Service
 @Getter
-public class ProductServiceImpl extends BaseServiceImpl<Product,Long,ProductRepository> implements ProductService {
+public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRepository> implements ProductService {
 
-    private final EntityManager entityManager;
-    private final BatchService batchService;
     private final PacketService packetService;
     private final ProductFamilyService productFamilyService;
+    private final ProductStepService productStepService;
 
     public ProductServiceImpl(ProductRepository repo,
-                              EntityManager entityManager,
-                              BatchService batchService,
                               PacketService packetService,
-                              ProductFamilyService productFamilyService) {
+                              ProductFamilyService productFamilyService,
+                              ProductStepService productStepService) {
         super(repo, Product.class);
-        this.entityManager = entityManager;
-        this.batchService = batchService;
         this.packetService = packetService;
         this.productFamilyService = productFamilyService;
+        this.productStepService = productStepService;
     }
 
 
-    public List<Product> findAllByCriteria(Step step, Long batchId, Long packetId, Long productFamilyId) {
+    public List<Product> findAllByCriteria(Step currentStep, Step nextStep, Long packetId, Long productFamilyId) {
         Specification<Product> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (step != null) {
-                predicates.add(criteriaBuilder.equal(root.get("currentStep"), step));
+            if (currentStep != null) {
+                predicates.add(criteriaBuilder.equal(root.get("currentStep"), currentStep));
             }
-            if (batchId != null) {
-                predicates.add(criteriaBuilder.equal(root.get("batch"), batchService.getOne(batchId)));
+            if (nextStep != null) {
+                predicates.add(criteriaBuilder.equal(root.get("nextStep"), nextStep));
             }
             if (packetId != null) {
                 predicates.add(criteriaBuilder.equal(root.get("packet"), packetService.getOne(packetId)));
@@ -65,4 +64,76 @@ public class ProductServiceImpl extends BaseServiceImpl<Product,Long,ProductRepo
 
         return repository.findAll(specification);
     }
+
+    @Override
+    public Product startStep(Step targetStep, Long productId) {
+
+        if (targetStep != Step.FINISHED) {
+            throw new RuntimeException("Step cannot be processed independently"); // TODO create custom exception
+        }
+
+        Product product = repository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(productId, Product.class));
+
+        return startStep(targetStep, product);
+    }
+
+    @Override
+    public Product startStep(Step targetStep, Product product) {
+
+        if (product.getNextStep() != targetStep) {
+            throw new RuntimeException("Target Step is not the next step of current product!");
+        }
+
+        product.getSteps().add(productStepService.startStep(targetStep, product));
+
+        if (targetStep == Step.ENCODED || targetStep == Step.PRODUCTION || targetStep == Step.PACKED || targetStep == Step.SENT) {
+            product.doNextStep();
+        }
+
+        return repository.save(product);
+    }
+
+    @Override
+    public void pauseStep(Step targetStep, Long productId) {
+
+        if (targetStep != Step.FINISHED) {
+            throw new RuntimeException("Step cannot be processed independently"); // TODO create custom exception
+        }
+
+        Product product = repository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(productId, Product.class));
+
+        pauseStep(targetStep, product, 1);
+    }
+
+    @Override
+    public void pauseStep(Step targetStep, Product product, int batchSize) {
+
+        product.getSteps().add(product.getSteps().size() - 1,productStepService.pauseStep(targetStep, product, batchSize));
+        repository.save(product);
+    }
+
+    @Override
+    public void finishStep(Step targetStep, Long productId) {
+
+        if (targetStep != Step.FINISHED) {
+            throw new RuntimeException("Step cannot be processed independently"); // TODO create custom exception
+        }
+
+        Product product = repository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(productId, Product.class));
+
+        finishStep(targetStep, product, 1);
+    }
+
+    @Override
+    public void finishStep(Step targetStep, Product product, int batchSize) {
+
+        product.getSteps().add(product.getSteps().size() - 1,productStepService.finishStep(targetStep, product, batchSize));
+        product.doNextStep();
+        repository.save(product);
+    }
+
+
 }
