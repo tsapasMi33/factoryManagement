@@ -22,19 +22,15 @@ import java.io.IOException;
 public class JWTAuthFilter extends OncePerRequestFilter {
 
     private final JWTProvider jwtProvider;
-    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        User user = userService.getUserByUsername("t");
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
-//        String token = jwtProvider.extractToken(request);
-//        User user;
-//        if (token != null && (user = jwtProvider.isTokenValid(token)) != null) {
-//            Authentication auth = jwtProvider.generateAuth(user);
-//            SecurityContextHolder.getContext().setAuthentication(auth);
-//        }
+        String token = jwtProvider.extractToken(request);
+        UserDetails user;
+        if (token != null && (user = jwtProvider.isTokenValid(token)) != null) {
+            Authentication auth = jwtProvider.generateAuth((User) user);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
         filterChain.doFilter(request,response);
     }
 }
