@@ -32,7 +32,7 @@ public class BatchController {
         return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
     }
 
-    @PostMapping("put-in-production")
+    @PostMapping("/put-in-production")
     public ResponseEntity<HttpStatus> createBatch(@Valid @RequestBody List<BatchForm> forms) {
         forms.forEach(batchForm -> service.create(mapper.toEntity(batchForm)));
         return ResponseEntity.status(HttpStatus.CREATED).build();

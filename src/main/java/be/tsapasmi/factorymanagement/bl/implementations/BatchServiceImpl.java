@@ -1,5 +1,7 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
+import be.tsapasmi.factorymanagement.bl.exceptions.BatchInSingleProductStepException;
+import be.tsapasmi.factorymanagement.bl.exceptions.IllegalCollectionException;
 import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
 import be.tsapasmi.factorymanagement.bl.interfaces.BatchService;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
@@ -57,7 +59,7 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepositor
     @Override
     public Batch startStep(Step targetStep, Long batchId) {
         return switch (targetStep){
-            case ENCODED, PRODUCTION, FINISHED, PACKED, SENT -> throw new RuntimeException("Step cannot be processed in batches"); // TODO create custom exception
+            case ENCODED, PRODUCTION, FINISHED, PACKED, SENT -> throw new BatchInSingleProductStepException();
             default -> {
                 Batch batch = repository.findById(batchId)
                         .orElseThrow(() -> new ResourceNotFoundException(batchId, Batch.class));
@@ -95,7 +97,7 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepositor
     public Batch create(Batch entity) {
         Client client = entity.getProducts().get(0).getOrder().getClient();
         if (entity.getProducts().stream().anyMatch(product -> product.getOrder().getClient() != client)){
-           throw new RuntimeException("All Batch products must belong to the same client"); // TODO create custom exception
+           throw new IllegalCollectionException("All Batch products must belong to the same client");
         }
         entity.getProducts()
                 .forEach(product -> productService.startStep(Step.PRODUCTION, product));

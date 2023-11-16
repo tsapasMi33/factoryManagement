@@ -5,5 +5,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends BaseService<User,Long> {
 
-    User getByUsername(String username);
+
+    User login(String username, String password);
+
+    void enableUser(long userId);
+
+    void disableUser(long userId);
+
+    boolean isUserAvailable(User user);
 }

@@ -13,17 +13,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Packet extends BaseEntity<Long> {
+public class Shipment extends BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String code;
-
-    @OneToMany(mappedBy = "packet", cascade = CascadeType.ALL)
-    private List<Product> products;
-
-    @ManyToOne
-    private Shipment shipment;
+    @OneToMany(mappedBy = "shipment", cascade = CascadeType.ALL)
+    private List<Packet> packets;
 }

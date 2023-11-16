@@ -27,7 +27,7 @@ public class Product extends BaseEntity<Long> {
     private Step currentStep;
 
     @Enumerated(EnumType.STRING)
-    private Step nextStep;
+    private Step nextStep = Step.ENCODED;
 
     @ManyToOne
     private ProductVariant variant;
@@ -36,26 +36,11 @@ public class Product extends BaseEntity<Long> {
     private Order order;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
-    private List<ProductStep> steps;
+    private List<ProductStep> steps = new ArrayList<>(12);
 
     @ManyToOne
     private Batch batch;
 
     @ManyToOne
     private Packet packet;
-
-    {
-        steps = new ArrayList<>();
-        nextStep = Step.ENCODED;
-    }
-
-    public void doNextStep() {
-        currentStep = nextStep;
-        int nextStepIndex = variant.getProductionPath().indexOf(nextStep) + 1;
-        if (nextStepIndex < variant.getProductionPath().size()) {
-            nextStep = variant.getProductionPath().get(nextStepIndex);
-        } else {
-            nextStep = null;
-        }
-    }
 }

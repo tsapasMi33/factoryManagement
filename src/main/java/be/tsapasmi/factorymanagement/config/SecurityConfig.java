@@ -1,5 +1,6 @@
 package be.tsapasmi.factorymanagement.config;
 
+import be.tsapasmi.factorymanagement.security.filters.ExceptionHandlerFilter;
 import be.tsapasmi.factorymanagement.security.filters.JWTAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTAuthFilter jwtAuthFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTAuthFilter jwtAuthFilter, ExceptionHandlerFilter exceptionHandlerFilter) throws Exception {
 
 
         http.csrf(AbstractHttpConfigurer::disable);
@@ -40,12 +41,13 @@ public class SecurityConfig {
 
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(exceptionHandlerFilter, JWTAuthFilter.class);
 
         http.authorizeHttpRequests(
                 registry -> registry
-                        .requestMatchers(HttpMethod.POST,"/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"user/login").permitAll()
                         .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
         );
 
 

@@ -1,6 +1,6 @@
 package be.tsapasmi.factorymanagement.security.filters;
 
-import be.tsapasmi.factorymanagement.bl.interfaces.UserService;
+
 import be.tsapasmi.factorymanagement.domain.entities.User;
 import be.tsapasmi.factorymanagement.security.jwt.JWTProvider;
 import jakarta.servlet.FilterChain;
@@ -8,7 +8,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

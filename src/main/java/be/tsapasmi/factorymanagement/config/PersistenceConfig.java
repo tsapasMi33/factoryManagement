@@ -1,6 +1,5 @@
 package be.tsapasmi.factorymanagement.config;
 
-import be.tsapasmi.factorymanagement.bl.interfaces.UserService;
 import be.tsapasmi.factorymanagement.domain.entities.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class PersistenceConfig {
 
     @Bean
-    AuditorAware<User> auditorProvider(UserService userService) {
-        return new AuditorAwareImpl(userService);
+    AuditorAware<User> auditorProvider() {
+        return new AuditorAwareImpl();
     }
 }

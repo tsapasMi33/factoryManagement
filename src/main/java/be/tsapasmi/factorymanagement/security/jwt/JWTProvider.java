@@ -1,6 +1,5 @@
 package be.tsapasmi.factorymanagement.security.jwt;
 
-import be.tsapasmi.factorymanagement.bl.interfaces.UserService;
 import be.tsapasmi.factorymanagement.domain.entities.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -57,7 +56,7 @@ public class JWTProvider {
         }
     }
 
-    public Authentication generateAuth(UserDetails user) {
+    public Authentication generateAuth(User user) {
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 }

@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
 import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
+import be.tsapasmi.factorymanagement.bl.exceptions.SingleProductInBatchStepException;
 import be.tsapasmi.factorymanagement.bl.interfaces.*;
 import be.tsapasmi.factorymanagement.dal.ProductRepository;
 import be.tsapasmi.factorymanagement.domain.entities.Batch;
@@ -27,22 +28,19 @@ import java.util.List;
 @Getter
 public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRepository> implements ProductService {
 
-    private final PacketService packetService;
     private final ProductFamilyService productFamilyService;
     private final ProductStepService productStepService;
 
     public ProductServiceImpl(ProductRepository repo,
-                              PacketService packetService,
                               ProductFamilyService productFamilyService,
                               ProductStepService productStepService) {
         super(repo, Product.class);
-        this.packetService = packetService;
         this.productFamilyService = productFamilyService;
         this.productStepService = productStepService;
     }
 
 
-    public List<Product> findAllByCriteria(Step currentStep, Step nextStep, Long packetId, Long productFamilyId) {
+    public List<Product> findAllByCriteria(Step currentStep, Step nextStep, Long productFamilyId) {
         Specification<Product> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -51,9 +49,6 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
             }
             if (nextStep != null) {
                 predicates.add(criteriaBuilder.equal(root.get("nextStep"), nextStep));
-            }
-            if (packetId != null) {
-                predicates.add(criteriaBuilder.equal(root.get("packet"), packetService.getOne(packetId)));
             }
             if (productFamilyId != null) {
                 predicates.add(criteriaBuilder.equal(root.get("variant").get("productFamily"), productFamilyService.getOne(productFamilyId)));
@@ -69,7 +64,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
     public Product startStep(Step targetStep, Long productId) {
 
         if (targetStep != Step.FINISHED) {
-            throw new RuntimeException("Step cannot be processed independently"); // TODO create custom exception
+            throw new SingleProductInBatchStepException();
         }
 
         Product product = repository.findById(productId)
@@ -81,14 +76,10 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
     @Override
     public Product startStep(Step targetStep, Product product) {
 
-        if (product.getNextStep() != targetStep) {
-            throw new RuntimeException("Target Step is not the next step of current product!");
-        }
-
         product.getSteps().add(productStepService.startStep(targetStep, product));
 
         if (targetStep == Step.ENCODED || targetStep == Step.PRODUCTION || targetStep == Step.PACKED || targetStep == Step.SENT) {
-            product.doNextStep();
+            doNextStep(product);
         }
 
         return repository.save(product);
@@ -98,7 +89,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
     public void pauseStep(Step targetStep, Long productId) {
 
         if (targetStep != Step.FINISHED) {
-            throw new RuntimeException("Step cannot be processed independently"); // TODO create custom exception
+            throw new SingleProductInBatchStepException();
         }
 
         Product product = repository.findById(productId)
@@ -118,7 +109,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
     public void finishStep(Step targetStep, Long productId) {
 
         if (targetStep != Step.FINISHED) {
-            throw new RuntimeException("Step cannot be processed independently"); // TODO create custom exception
+            throw new SingleProductInBatchStepException();
         }
 
         Product product = repository.findById(productId)
@@ -131,9 +122,18 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
     public void finishStep(Step targetStep, Product product, int batchSize) {
 
         product.getSteps().add(product.getSteps().size() - 1,productStepService.finishStep(targetStep, product, batchSize));
-        product.doNextStep();
+        doNextStep(product);
         repository.save(product);
     }
 
+    private void doNextStep(Product product) {
+        product.setCurrentStep(product.getNextStep());
+        int nextStepIdx = product.getVariant().getProductionPath().indexOf(product.getNextStep()) + 1;
+        if (nextStepIdx < product.getVariant().getProductionPath().size()) {
+            product.setNextStep(product.getVariant().getProductionPath().get(nextStepIdx));
+        } else {
+            product.setNextStep(null);
+        }
+    }
 
 }

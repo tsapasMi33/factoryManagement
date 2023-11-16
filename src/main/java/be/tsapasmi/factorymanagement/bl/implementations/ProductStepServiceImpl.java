@@ -1,12 +1,15 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
-import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
+import be.tsapasmi.factorymanagement.bl.exceptions.*;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductStepService;
+import be.tsapasmi.factorymanagement.bl.interfaces.UserService;
 import be.tsapasmi.factorymanagement.dal.ProductStepRepository;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.domain.entities.ProductStep;
+import be.tsapasmi.factorymanagement.domain.entities.User;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import lombok.Getter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -17,8 +20,11 @@ import java.util.List;
 @Getter
 public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, ProductStepRepository> implements ProductStepService {
 
-    public ProductStepServiceImpl(ProductStepRepository repository) {
+    private final UserService userService;
+
+    public ProductStepServiceImpl(ProductStepRepository repository, UserService userService) {
         super(repository, ProductStep.class);
+        this.userService = userService;
     }
 
 
@@ -30,15 +36,19 @@ public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, Pr
     @Override
     public ProductStep startStep(Step targetStep, Product product) {
 
+        if (!userService.isUserAvailable( (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+            throw new UserOccupiedException(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        }
+
         if (product.getNextStep() != targetStep) {
-            throw new RuntimeException("Target step is not the next step for this product"); // TODO create custom exception
+            throw new BadPathException(targetStep, product);
         }
 
         ProductStep step =  repository.findExistingStep(product.getId(), targetStep)
                 .orElse(new ProductStep());
 
         if (step.isFinished()){
-            throw new RuntimeException("Step is finished"); // TODO create custom exception
+            throw new FinishedStepException(targetStep, product);
         }
 
         return switch (targetStep) {
@@ -73,18 +83,18 @@ public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, Pr
     @Override
     public ProductStep pauseStep(Step targetStep,Product product, int batchSize) {
         ProductStep step =  repository.findExistingStep(product.getId(), Step.CUT)
-                .orElseThrow(() -> new RuntimeException("Step does not exist")); // TODO create custom exception
+                .orElseThrow(() -> new NotStartedStepException(targetStep, product));
 
         return switch (targetStep) {
-            case ENCODED, PRODUCTION, PACKED, SENT -> throw new RuntimeException("Step cannot be paused"); // TODO create custom exception
+            case ENCODED, PRODUCTION, PACKED, SENT -> throw new IllegalActionOnStep(targetStep, "paused");
             case CUT, BENT, COMBINED, WELDED, ASSEMBLED, FINISHED -> {
 
                 if (step.isFinished()){
-                    throw new RuntimeException("Step is finished"); // TODO create custom exception
+                    throw new FinishedStepException(targetStep, product);
                 }
 
                 if (step.isPaused()){
-                    throw new RuntimeException("Step is paused"); // TODO create custom exception
+                    throw new PausedStepException(targetStep, product);
                 }
 
                 step.setDuration(Duration.between(step.getStart(),LocalDateTime.now()).dividedBy(batchSize));
@@ -99,18 +109,18 @@ public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, Pr
     @Override
     public ProductStep finishStep(Step targetStep,Product product, int batchSize) {
         ProductStep step =  repository.findExistingStep(product.getId(), targetStep)
-                .orElseThrow(() -> new RuntimeException("Step does not exist")); // TODO create custom exception
+                .orElseThrow(() -> new NotStartedStepException(targetStep, product));
 
         return switch (targetStep) {
-            case ENCODED, PRODUCTION, PACKED, SENT -> throw new RuntimeException("Step cannot be paused"); // TODO create custom exception
+            case ENCODED, PRODUCTION, PACKED, SENT -> throw  new IllegalActionOnStep(targetStep, "finished");
             case CUT, BENT, COMBINED, WELDED, ASSEMBLED, FINISHED -> {
 
                 if (step.isFinished()){
-                    throw new RuntimeException("Step is finished"); // TODO create custom exception
+                    throw new FinishedStepException(targetStep, product);
                 }
 
                 if (step.isPaused()){
-                    throw new RuntimeException("Step is paused"); // TODO create custom exception
+                    throw new PausedStepException(targetStep, product);
                 }
 
                 step.setFinish(LocalDateTime.now());

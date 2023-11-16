@@ -1,10 +1,11 @@
 package be.tsapasmi.factorymanagement;
 
-import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
+import be.tsapasmi.factorymanagement.bl.exceptions.*;
 import be.tsapasmi.factorymanagement.web.models.dto.ErrorDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,13 +19,46 @@ import java.util.Map;
 @ControllerAdvice
 public class ControllerAdvisor {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler({
+            ResourceNotFoundException.class,
+            UserNotFoundException.class
+    })
     public ResponseEntity<ErrorDTO> handle(ResourceNotFoundException ex, HttpServletRequest request) {
         ErrorDTO body = ErrorDTO.builder(LocalDateTime.now(), HttpStatus.NOT_FOUND.value())
                 .putError("message", ex.getMessage())
                 .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler({
+            IllegalActionOnStep.class,
+            IllegalCollectionException.class,
+            NotStartedStepException.class,
+            PausedStepException.class
+    })
+    public ResponseEntity<ErrorDTO> handle(IllegalCollectionException ex, HttpServletRequest request) {
+        ErrorDTO body = ErrorDTO.builder(LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .putError("message", ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
+    }
+
+    @ExceptionHandler({
+            BadPathException.class,
+            BatchInSingleProductStepException.class,
+            FinishedStepException.class,
+            SingleProductInBatchStepException.class,
+            UserOccupiedException.class,
+            UserStateException.class
+    })
+    public ResponseEntity<ErrorDTO> handle(RuntimeException ex, HttpServletRequest request) {
+        ErrorDTO body = ErrorDTO.builder(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value())
+                .putError("message", ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -62,5 +96,14 @@ public class ControllerAdvisor {
 
         return ResponseEntity.unprocessableEntity()
                 .body(body);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorDTO> handle(BadCredentialsException ex){
+        ErrorDTO body = ErrorDTO.builder(LocalDateTime.now(), HttpStatus.UNAUTHORIZED.value())
+                .putError("message", ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 }

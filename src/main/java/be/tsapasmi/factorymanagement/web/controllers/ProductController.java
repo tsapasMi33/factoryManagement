@@ -25,11 +25,9 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam(required = false)Step currentStep,
                                                            @RequestParam(required = false)Step nextStep,
-                                                           @RequestParam(required = false)Long batchId,
-                                                           @RequestParam(required = false)Long packetId,
                                                            @RequestParam(required = false)Long productFamilyId
                                                            ) {
-        return ResponseEntity.ok(mapper.toDTO(service.findAllByCriteria(currentStep, nextStep,packetId,productFamilyId)));
+        return ResponseEntity.ok(mapper.toDTO(service.findAllByCriteria(currentStep, nextStep,productFamilyId)));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
