@@ -24,10 +24,21 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Query("""
     SELECT COUNT(u) = 0 FROM User u
-    JOIN ProductStep ps
-    WHERE u = :user
+    JOIN ProductStep ps ON ps.createdBy = u
+    JOIN Product p ON ps.product = p
+    JOIN Batch b ON p.batch = b
+    WHERE u.id = :userId
     AND ps.finished = false
     AND ps.paused = false
+    AND 1 < (
+        SELECT COUNT(DISTINCT b.id) FROM User u
+    JOIN ProductStep ps ON ps.createdBy = u
+    JOIN Product p ON ps.product = p
+    JOIN Batch b ON p.batch = b
+    WHERE u.id = :userId
+    AND ps.finished = false
+    AND ps.paused = false
+    )
 """)
-    boolean isUserAvailable(User user);
+    boolean isUserAvailable(long userId);
 }

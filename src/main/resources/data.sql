@@ -20,5 +20,17 @@ INSERT INTO public.product_variant (height, length, price, width, created_by_id,
                                     variant_identifier)
 VALUES (850, 1000, 60, 700, 1, '2023-11-15 21:27:33.455303', 1, '2023-11-15 21:27:33.455303', 1,
         'TABT304[L100xW70xH85]C', 'A table', 'T304', 'c');
+INSERT INTO public.product_variant_steps (step_order, product_variant_id, production_path)
+VALUES
+    (0, 1, 'ENCODED'),
+    (1, 1, 'PRODUCTION'),
+    (2, 1, 'CUT'),
+    (3, 1, 'BENT'),
+    (4, 1, 'COMBINED'),
+    (5, 1, 'WELDED'),
+    (6, 1, 'FINISHED'),
+    (7, 1, 'PACKED'),
+    (8, 1, 'SENT');
+
 
 

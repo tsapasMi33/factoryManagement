@@ -47,6 +47,14 @@ public class SecurityConfig {
                 registry -> registry
                         .requestMatchers(HttpMethod.POST,"user/login").permitAll()
                         .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
+                        .requestMatchers(
+                                "/client/**",
+                                "/component/**",
+                                "/order/**",
+                                "/product-family/**",
+                                "/product-step/**",
+                                "/product-variant/**",
+                                "/user/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
         );
 

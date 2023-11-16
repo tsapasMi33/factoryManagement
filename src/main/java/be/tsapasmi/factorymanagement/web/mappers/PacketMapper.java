@@ -7,8 +7,8 @@ import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.web.models.dto.PacketDTO;
 import be.tsapasmi.factorymanagement.web.models.form.PacketForm;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +18,15 @@ public abstract class PacketMapper {
 
     protected ProductService productService;
     protected PacketService packetService;
+
+    @Autowired
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+    @Autowired
+    public void setPacketService(PacketService packetService) {
+        this.packetService = packetService;
+    }
 
     public abstract PacketDTO toDTO(Packet packet);
 

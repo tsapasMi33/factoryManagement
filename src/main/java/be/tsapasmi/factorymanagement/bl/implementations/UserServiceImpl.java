@@ -52,7 +52,7 @@ public class UserServiceImpl extends BaseServiceImpl<User,Long, UserRepository> 
 
     @Override
     public boolean isUserAvailable(User user) {
-        return repository.isUserAvailable(user);
+        return repository.isUserAvailable(user.getId());
     }
 
     @Override

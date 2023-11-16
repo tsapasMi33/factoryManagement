@@ -21,6 +21,18 @@ public abstract class BatchMapper {
     protected BatchService batchService;
     protected ProductMapper productMapper;
 
+    @Autowired
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+    @Autowired
+    public void setBatchService(BatchService batchService) {
+        this.batchService = batchService;
+    }
+    @Autowired
+    public void setProductMapper(ProductMapper productMapper) {
+        this.productMapper = productMapper;
+    }
 
     @Mapping(source = "products", target = "products", qualifiedByName = "mapProductsToProductDTOs")
     public abstract BatchDTO toDTO(Batch batch);

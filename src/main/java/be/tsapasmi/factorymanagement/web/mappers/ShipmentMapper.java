@@ -2,7 +2,6 @@ package be.tsapasmi.factorymanagement.web.mappers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.PacketService;
 import be.tsapasmi.factorymanagement.domain.entities.Packet;
-import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.domain.entities.Shipment;
 import be.tsapasmi.factorymanagement.web.models.dto.PacketDTO;
 import be.tsapasmi.factorymanagement.web.models.dto.ShipmentDTO;
@@ -11,13 +10,24 @@ import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Mapper(uses = {PacketMapper.class, PacketService.class})
 public abstract class ShipmentMapper {
+
     protected PacketService packetService;
     protected PacketMapper packetMapper;
+
+    @Autowired
+    public void setPacketService(PacketService packetService) {
+        this.packetService = packetService;
+    }
+    @Autowired
+    public void setPacketMapper(PacketMapper packetMapper) {
+        this.packetMapper = packetMapper;
+    }
 
     @Named("shipmentToShipmentDTO")
     @Mapping(target = "packets", source = "packets", qualifiedByName = "mapPacketDTOs")
