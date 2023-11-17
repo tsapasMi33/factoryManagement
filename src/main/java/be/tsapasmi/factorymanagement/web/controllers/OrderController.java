@@ -2,8 +2,8 @@ package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.OrderService;
 import be.tsapasmi.factorymanagement.web.mappers.OrderMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.OrderDTO;
-import be.tsapasmi.factorymanagement.web.models.form.OrderForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.OrderDto;
+import be.tsapasmi.factorymanagement.web.models.forms.OrderForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/order")
@@ -21,13 +22,13 @@ public class OrderController {
     private final OrderMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        return ResponseEntity.ok(mapper.toDTO(service.getAll()));
+    public ResponseEntity<List<OrderDto>> getAllOrders() {
+        return ResponseEntity.ok(mapper.toDto(service.getAll()));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<OrderDTO> getOrder(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<OrderDto> getOrder(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PostMapping()

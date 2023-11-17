@@ -17,12 +17,14 @@ import lombok.Getter;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Getter
-public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepository> implements BatchService {
+public class BatchServiceImpl extends BaseServiceImpl<Batch, Long, BatchRepository> implements BatchService {
 
     private final ProductService productService;
 
@@ -64,7 +66,7 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepositor
                 .orElseThrow(() -> new ResourceNotFoundException(batchId, Batch.class));
 
         batch.getProducts()
-                .forEach(product -> productService.startStep(targetStep,product));
+                .forEach(product -> productService.startStep(targetStep, product));
         return repository.save(batch);
     }
 
@@ -74,7 +76,7 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepositor
                 .orElseThrow(() -> new ResourceNotFoundException(batchId, Batch.class));
 
         batch.getProducts()
-                .forEach(product -> productService.pauseStep(targetStep,product, batch.getProducts().size()));
+                .forEach(product -> productService.pauseStep(targetStep, product, batch.getProducts().size()));
 
         repository.save(batch);
     }
@@ -85,16 +87,23 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepositor
                 .orElseThrow(() -> new ResourceNotFoundException(batchId, Batch.class));
 
         batch.getProducts()
-                .forEach(product -> productService.finishStep(targetStep,product, batch.getProducts().size()));
+                .forEach(product -> productService.finishStep(targetStep, product, batch.getProducts().size()));
 
         repository.save(batch);
     }
 
     @Override
     public Batch create(Batch entity) {
+        entity.setProducts(
+                entity.getProducts().stream()
+                        .map(product -> productService.getOne(product.getId()))
+                        .toList()
+        );
+        entity.setCode(generateCode());
+
         Client client = entity.getProducts().get(0).getOrder().getClient();
-        if (entity.getProducts().stream().anyMatch(product -> product.getOrder().getClient() != client)){
-           throw new IllegalCollectionException("All Batch products must belong to the same client");
+        if (entity.getProducts().stream().anyMatch(product -> product.getOrder().getClient() != client)) {
+            throw new IllegalCollectionException("All Batch products must belong to the same client");
         }
         entity.getProducts()
                 .forEach(product -> productService.startStep(Step.PRODUCTION, product));
@@ -102,5 +111,21 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepositor
         Batch created = super.create(entity);
         repository.updateProducts(created, created.getProducts());
         return created;
+    }
+
+    private String generateCode() {
+
+        Batch lastBatch = repository.getLastBatch().orElse(null);
+        LocalDate today = LocalDate.now();
+
+        if (lastBatch != null && lastBatch.getCreatedDate().toLocalDate().isEqual(today)) {
+            long code = Long.parseLong(lastBatch.getCode());
+            return String.valueOf(++code);
+        }
+
+        return String.valueOf(today.getYear()).substring(2, 4) +
+                (today.get(ChronoField.ALIGNED_WEEK_OF_YEAR) < 10 ? "0" + today.get(ChronoField.ALIGNED_WEEK_OF_YEAR) : today.get(ChronoField.ALIGNED_WEEK_OF_YEAR)) +
+                today.getDayOfWeek().getValue() +
+                "001";
     }
 }

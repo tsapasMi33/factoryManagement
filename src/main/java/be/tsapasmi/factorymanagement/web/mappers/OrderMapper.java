@@ -1,54 +1,26 @@
 package be.tsapasmi.factorymanagement.web.mappers;
 
-import be.tsapasmi.factorymanagement.bl.interfaces.*;
-import be.tsapasmi.factorymanagement.domain.entities.Client;
 import be.tsapasmi.factorymanagement.domain.entities.Order;
-import be.tsapasmi.factorymanagement.domain.entities.Product;
-import be.tsapasmi.factorymanagement.web.models.dto.OrderDTO;
-import be.tsapasmi.factorymanagement.web.models.form.OrderForm;
-import be.tsapasmi.factorymanagement.web.models.form.ProductForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.OrderDto;
+import be.tsapasmi.factorymanagement.web.models.forms.OrderForm;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@Mapper(uses = {ProductMapper.class, ClientService.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
-public abstract class OrderMapper {
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {ClientMapper.class})
+public interface OrderMapper {
 
-    protected ProductMapper productMapper;
-    protected ClientService clientService;
+    @Named("toDto")
+    OrderDto toDto(Order order);
 
-    @Autowired
-    public void setProductMapper(ProductMapper productMapper){
-        this.productMapper = productMapper;
-    }
-    @Autowired
-    public void setClientService(ClientService clientService) {
-        this.clientService = clientService;
-    }
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Order partialUpdate(OrderDto orderDto, @MappingTarget Order order);
 
-    public abstract OrderDTO toDTO(Order order);
+    @IterableMapping(qualifiedByName = "toDto")
+    List<OrderDto> toDto(List<Order> orders);
 
-    public abstract List<OrderDTO> toDTO(List<Order> orders);
+    Order toEntity(OrderForm orderForm);
 
-    @Mapping(target = "orderDate", expression = "java(LocalDate.now())")
-    @Mapping(target = "products", source = "products", qualifiedByName = "mapProducts")
-    @Mapping(target = "client", source = "clientId", qualifiedByName = "mapClient")
-    public abstract Order toEntity(OrderForm form);
-
-    @Named("mapProducts")
-    protected List<Product> mapProducts(List<ProductForm> products) {
-        return products.stream()
-                .map(productForm -> productMapper.toEntity(productForm))
-                .toList();
-    }
-    @Named("mapClient")
-    protected Client mapClient(long clientId) {
-        return clientService.getOne(clientId);
-    }
-
-    @AfterMapping
-    protected void setOrderReferenceInProducts(@MappingTarget Order order) {
-        order.getProducts().forEach(product -> product.setOrder(order));
-    }
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Order partialUpdate(OrderForm orderForm, @MappingTarget Order order);
 }

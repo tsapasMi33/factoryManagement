@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
 import be.tsapasmi.factorymanagement.bl.exceptions.IllegalCollectionException;
+import be.tsapasmi.factorymanagement.bl.interfaces.PacketService;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
 import be.tsapasmi.factorymanagement.bl.interfaces.ShipmentService;
 import be.tsapasmi.factorymanagement.dal.ShipmentRepository;
@@ -18,16 +19,24 @@ import java.util.List;
 public class ShipmentServiceImpl extends BaseServiceImpl<Shipment,Long, ShipmentRepository> implements ShipmentService {
 
     private final ProductService productService;
+    private final PacketService packetService;
 
-    public ShipmentServiceImpl(ShipmentRepository repository, ProductService productService) {
+    public ShipmentServiceImpl(ShipmentRepository repository, ProductService productService, PacketService packetService) {
         super(repository, Shipment.class);
         this.productService = productService;
+        this.packetService = packetService;
     }
 
     @Override
     public Shipment create(Shipment entity) {
-        Client client = entity.getPackets().get(0).getProducts().get(0).getOrder().getClient();
 
+        entity.setPackets(
+                entity.getPackets().stream()
+                        .map(packet -> packetService.getOne(packet.getId()))
+                        .toList()
+        );
+
+        Client client = entity.getPackets().get(0).getProducts().get(0).getOrder().getClient();
         List<Product> products = entity.getPackets().stream()
                 .flatMap(packet -> packet.getProducts().stream())
                 .toList();

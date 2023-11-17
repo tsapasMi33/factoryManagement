@@ -1,7 +1,6 @@
 package be.tsapasmi.factorymanagement.domain.entities;
 
 import be.tsapasmi.factorymanagement.domain.enums.Material;
-import be.tsapasmi.factorymanagement.domain.enums.Step;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,12 +19,6 @@ public class ProductVariant extends BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "product_variant_steps", joinColumns = @JoinColumn(name = "product_variant_id"))
-    @OrderColumn(name = "step_order")
-    private List<Step> productionPath;
 
     @Enumerated(EnumType.STRING)
     private Material material;

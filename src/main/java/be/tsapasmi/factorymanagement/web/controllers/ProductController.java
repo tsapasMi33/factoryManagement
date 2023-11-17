@@ -3,8 +3,8 @@ package be.tsapasmi.factorymanagement.web.controllers;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import be.tsapasmi.factorymanagement.web.mappers.ProductMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.ProductDTO;
-import be.tsapasmi.factorymanagement.web.models.form.ProductForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.ProductDto;
+import be.tsapasmi.factorymanagement.web.models.forms.ProductForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,16 +22,16 @@ public class ProductController {
     private final ProductMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam(required = false)Step currentStep,
+    public ResponseEntity<List<ProductDto>> getAllProducts(@RequestParam(required = false)Step currentStep,
                                                            @RequestParam(required = false)Step nextStep,
                                                            @RequestParam(required = false)Long productFamilyId
                                                            ) {
-        return ResponseEntity.ok(mapper.toDTO(service.findAllByCriteria(currentStep, nextStep,productFamilyId)));
+        return ResponseEntity.ok(mapper.toDto(service.findAllByCriteria(currentStep, nextStep,productFamilyId)));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<ProductDto> getProduct(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PutMapping("/{id:^[0-9]+$}")
@@ -47,8 +47,8 @@ public class ProductController {
     }
 
     @PatchMapping("/{productId:^[0-9]+$}/start")
-    public ResponseEntity<ProductDTO> startStep(@PathVariable Long productId, @RequestParam Step step) {
-        return ResponseEntity.ok(mapper.toDTO(service.startStep(step, productId)));
+    public ResponseEntity<ProductDto> startStep(@PathVariable Long productId, @RequestParam Step step) {
+        return ResponseEntity.ok(mapper.toDto(service.startStep(step, productId)));
     }
 
     @PatchMapping("/{productId:^[0-9]+$}/pause")

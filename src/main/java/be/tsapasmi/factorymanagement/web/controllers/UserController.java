@@ -4,10 +4,10 @@ import be.tsapasmi.factorymanagement.bl.interfaces.UserService;
 import be.tsapasmi.factorymanagement.domain.entities.User;
 import be.tsapasmi.factorymanagement.security.jwt.JWTProvider;
 import be.tsapasmi.factorymanagement.web.mappers.UserMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.AuthDTO;
-import be.tsapasmi.factorymanagement.web.models.dto.UserDTO;
-import be.tsapasmi.factorymanagement.web.models.form.LoginForm;
-import be.tsapasmi.factorymanagement.web.models.form.UserCreationForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.AuthDTO;
+import be.tsapasmi.factorymanagement.web.models.dtos.UserDto;
+import be.tsapasmi.factorymanagement.web.models.forms.LoginForm;
+import be.tsapasmi.factorymanagement.web.models.forms.UserForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,31 +27,31 @@ public class UserController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserDTO>> getAllClients() {
-        return ResponseEntity.ok(mapper.toDTO(service.getAll()));
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(mapper.toDto(service.getAll()));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<UserDto> getUser(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthDTO> login(@Valid @RequestBody LoginForm form) {
-        User user = service.login(form.getUsername(), form.getPassword());
+        User user = service.login(form.username(), form.password());
         String token = jwtProvider.generateToken(user);
 
-        return ResponseEntity.ok(new AuthDTO(form.getUsername(), token, user.getRole().name()));
+        return ResponseEntity.ok(new AuthDTO(form.username(), token, user.getRole().name()));
     }
 
     @PostMapping("/create-user")
-    public ResponseEntity<HttpStatus> createUser(@Valid @RequestBody UserCreationForm form) {
+    public ResponseEntity<HttpStatus> createUser(@Valid @RequestBody UserForm form) {
         service.create(mapper.toEntity(form));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<HttpStatus> updateUser(@PathVariable long id, @Valid @RequestBody UserCreationForm form) {
+    public ResponseEntity<HttpStatus> updateUser(@PathVariable long id, @Valid @RequestBody UserForm form) {
         service.update(id, mapper.toEntity(form));
         return ResponseEntity.ok().build();
     }

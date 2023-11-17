@@ -3,8 +3,8 @@ package be.tsapasmi.factorymanagement.web.controllers;
 import be.tsapasmi.factorymanagement.bl.interfaces.BatchService;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import be.tsapasmi.factorymanagement.web.mappers.BatchMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.BatchDTO;
-import be.tsapasmi.factorymanagement.web.models.form.BatchForm;
+import be.tsapasmi.factorymanagement.web.models.forms.BatchForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.BatchDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,26 +22,20 @@ public class BatchController {
     private final BatchMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<BatchDTO>> getBatches(@RequestParam(required = false) Step currentStep,
+    public ResponseEntity<List<BatchDto>> getBatches(@RequestParam(required = false) Step currentStep,
                                                      @RequestParam(required = false) Step nextStep) {
-        return ResponseEntity.ok(mapper.toDTO(service.findAllByCriteria(currentStep,nextStep)));
+        return ResponseEntity.ok(mapper.toDto(service.findAllByCriteria(currentStep,nextStep)));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<BatchDTO> getBatch(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<BatchDto> getBatch(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PostMapping("/put-in-production")
     public ResponseEntity<HttpStatus> createBatch(@Valid @RequestBody List<BatchForm> forms) {
         forms.forEach(batchForm -> service.create(mapper.toEntity(batchForm)));
         return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PutMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<HttpStatus> updateBatch(@PathVariable long id, @Valid @RequestBody BatchForm form) {
-        service.update(id, mapper.toEntity(form));
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id:^[0-9]+$}")
@@ -51,8 +45,8 @@ public class BatchController {
     }
 
     @PatchMapping("/{batchId:^[0-9]+$}/start")
-    public ResponseEntity<BatchDTO> startStep(@PathVariable Long batchId, @RequestParam Step step) {
-        return ResponseEntity.ok(mapper.toDTO(service.startStep(step, batchId)));
+    public ResponseEntity<BatchDto> startStep(@PathVariable Long batchId, @RequestParam Step step) {
+        return ResponseEntity.ok(mapper.toDto(service.startStep(step, batchId)));
     }
 
     @PatchMapping("/{batchId:^[0-9]+$}/pause")

@@ -1,4 +1,4 @@
-package be.tsapasmi.factorymanagement.web.models.dto;
+package be.tsapasmi.factorymanagement.web.models.dtos;
 
 import lombok.*;
 

@@ -1,28 +1,23 @@
 package be.tsapasmi.factorymanagement.web.mappers;
 
 import be.tsapasmi.factorymanagement.domain.entities.User;
-import be.tsapasmi.factorymanagement.web.models.dto.UserDTO;
-import be.tsapasmi.factorymanagement.web.models.form.UserCreationForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.UserDto;
+import be.tsapasmi.factorymanagement.web.models.forms.UserForm;
 import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(uses = {ProductStepMapper.class})
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
-
-    User toEntity(UserCreationForm userCreationForm);
-
-    @AfterMapping
-    default void linkJobs(@MappingTarget User user) {
-        user.getJobs().forEach(job -> job.setCreatedBy(user));
-    }
-
-    @Named("userToUserDTO")
-    UserDTO toDTO(User user);
-
-    @IterableMapping(qualifiedByName = "userToUserDTO")
-    List<UserDTO> toDTO(List<User> user);
+    @Named("toDto")
+    UserDto toDto(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    User partialUpdate(UserDTO userDTO, @MappingTarget User user);
+    User partialUpdate(UserDto userDto, @MappingTarget User user);
+
+    @IterableMapping(qualifiedByName = "toDto")
+    List<UserDto> toDto(List<User> users);
+
+
+    User toEntity(UserForm userForm);
 }

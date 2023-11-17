@@ -2,8 +2,8 @@ package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.ClientService;
 import be.tsapasmi.factorymanagement.web.mappers.ClientMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.ClientDTO;
-import be.tsapasmi.factorymanagement.web.models.form.ClientForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.ClientDto;
+import be.tsapasmi.factorymanagement.web.models.forms.ClientForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,13 +21,13 @@ public class ClientController {
     private final ClientMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ClientDTO>> getAllClients() {
-        return ResponseEntity.ok(mapper.toDTO(service.getAll()));
+    public ResponseEntity<List<ClientDto>> getAllClients() {
+        return ResponseEntity.ok(mapper.toDto(service.getAll()));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<ClientDTO> getClient(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<ClientDto> getClient(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PostMapping()

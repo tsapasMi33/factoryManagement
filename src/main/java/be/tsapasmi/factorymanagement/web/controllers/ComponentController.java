@@ -2,8 +2,8 @@ package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.ComponentService;
 import be.tsapasmi.factorymanagement.web.mappers.ComponentMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.ComponentDTO;
-import be.tsapasmi.factorymanagement.web.models.form.ComponentForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.ComponentDto;
+import be.tsapasmi.factorymanagement.web.models.forms.ComponentForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,13 +21,13 @@ public class ComponentController {
     private final ComponentMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ComponentDTO>> getAllComponents() {
-        return ResponseEntity.ok(mapper.toDTO(service.getAll()));
+    public ResponseEntity<List<ComponentDto>> getAllComponents() {
+        return ResponseEntity.ok(mapper.toDto(service.getAll()));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<ComponentDTO> getComponent(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<ComponentDto> getComponent(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PostMapping()

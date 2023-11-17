@@ -1,18 +1,26 @@
 package be.tsapasmi.factorymanagement.web.mappers;
 
 import be.tsapasmi.factorymanagement.domain.entities.ProductFamily;
-import be.tsapasmi.factorymanagement.web.models.dto.ProductFamilyDTO;
-import be.tsapasmi.factorymanagement.web.models.form.ProductFamilyForm;
-import org.mapstruct.Mapper;
+import be.tsapasmi.factorymanagement.web.models.dtos.ProductFamilyDto;
+import be.tsapasmi.factorymanagement.web.models.forms.ProductFamilyForm;
+import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProductFamilyMapper {
 
-    ProductFamilyDTO toDTO(ProductFamily productFamily);
+    @Named("toDto")
+    ProductFamilyDto toDto(ProductFamily productFamily);
 
-    List<ProductFamilyDTO> toDTO(List<ProductFamily> productFamilies);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    ProductFamily partialUpdate(ProductFamilyDto productFamilyDto, @MappingTarget ProductFamily productFamily);
 
-    ProductFamily toEntity(ProductFamilyForm form);
+    @IterableMapping(qualifiedByName = "toDto")
+    List<ProductFamilyDto> toDto(List<ProductFamily> productFamilies);
+
+    ProductFamily toEntity(ProductFamilyForm productFamilyForm);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    ProductFamily partialUpdate(ProductFamilyForm productFamilyForm, @MappingTarget ProductFamily productFamily);
 }

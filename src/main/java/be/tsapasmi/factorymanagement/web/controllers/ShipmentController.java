@@ -2,8 +2,8 @@ package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.ShipmentService;
 import be.tsapasmi.factorymanagement.web.mappers.ShipmentMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.ShipmentDTO;
-import be.tsapasmi.factorymanagement.web.models.form.ShipmentForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.ShipmentDto;
+import be.tsapasmi.factorymanagement.web.models.forms.ShipmentForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,13 +21,13 @@ public class ShipmentController {
     private final ShipmentMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ShipmentDTO>> getShipments() {
-        return ResponseEntity.ok(mapper.toDTO(service.getAll()));
+    public ResponseEntity<List<ShipmentDto>> getShipments() {
+        return ResponseEntity.ok(mapper.toDto(service.getAll()));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<ShipmentDTO> getShipment(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<ShipmentDto> getShipment(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PostMapping("/send")

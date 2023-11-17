@@ -26,7 +26,6 @@ public abstract class BaseEntity<K> {
 
     @CreatedBy
     @ManyToOne
-    @JoinColumn(nullable = true)
     protected User createdBy;
 
     @CreatedDate

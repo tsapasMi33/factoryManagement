@@ -3,8 +3,8 @@ package be.tsapasmi.factorymanagement.web.controllers;
 import be.tsapasmi.factorymanagement.bl.interfaces.PacketService;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import be.tsapasmi.factorymanagement.web.mappers.PacketMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.PacketDTO;
-import be.tsapasmi.factorymanagement.web.models.form.PacketForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.PacketDto;
+import be.tsapasmi.factorymanagement.web.models.forms.PacketForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,13 +22,13 @@ public class PacketController {
     private final PacketMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<PacketDTO>> getPackets(@RequestParam(required = false) Step currentStep) {
-        return ResponseEntity.ok(mapper.toDTO(service.findAllAtStep(currentStep)));
+    public ResponseEntity<List<PacketDto>> getPackets(@RequestParam(required = false) Step currentStep) {
+        return ResponseEntity.ok(mapper.toDto(service.findAllAtStep(currentStep)));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<PacketDTO> getPacket(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<PacketDto> getPacket(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PostMapping("/pack")
@@ -37,11 +37,7 @@ public class PacketController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<HttpStatus> updatePacket(@PathVariable long id, @Valid @RequestBody PacketForm form) {
-        service.update(id, mapper.toEntity(form));
-        return ResponseEntity.ok().build();
-    }
+
 
     @DeleteMapping("/{id:^[0-9]+$}")
     public ResponseEntity<HttpStatus> deletePacket(@PathVariable long id) {

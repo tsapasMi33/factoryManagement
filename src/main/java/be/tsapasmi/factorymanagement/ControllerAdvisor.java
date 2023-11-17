@@ -1,7 +1,7 @@
 package be.tsapasmi.factorymanagement;
 
 import be.tsapasmi.factorymanagement.bl.exceptions.*;
-import be.tsapasmi.factorymanagement.web.models.dto.ErrorDTO;
+import be.tsapasmi.factorymanagement.web.models.dtos.ErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;

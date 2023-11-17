@@ -1,54 +1,23 @@
 package be.tsapasmi.factorymanagement.web.mappers;
 
-import be.tsapasmi.factorymanagement.bl.interfaces.PacketService;
-import be.tsapasmi.factorymanagement.domain.entities.Packet;
 import be.tsapasmi.factorymanagement.domain.entities.Shipment;
-import be.tsapasmi.factorymanagement.web.models.dto.PacketDTO;
-import be.tsapasmi.factorymanagement.web.models.dto.ShipmentDTO;
-import be.tsapasmi.factorymanagement.web.models.form.ShipmentForm;
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.springframework.beans.factory.annotation.Autowired;
+import be.tsapasmi.factorymanagement.web.models.dtos.ShipmentDto;
+import be.tsapasmi.factorymanagement.web.models.forms.ShipmentForm;
+import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(uses = {PacketMapper.class, PacketService.class})
-public abstract class ShipmentMapper {
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {PacketMapper.class})
+public interface ShipmentMapper {
 
-    protected PacketService packetService;
-    protected PacketMapper packetMapper;
+    @Named("toDto")
+    ShipmentDto toDto(Shipment shipment);
 
-    @Autowired
-    public void setPacketService(PacketService packetService) {
-        this.packetService = packetService;
-    }
-    @Autowired
-    public void setPacketMapper(PacketMapper packetMapper) {
-        this.packetMapper = packetMapper;
-    }
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Shipment partialUpdate(ShipmentDto shipmentDto, @MappingTarget Shipment shipment);
 
-    @Named("shipmentToShipmentDTO")
-    @Mapping(target = "packets", source = "packets", qualifiedByName = "mapPacketDTOs")
-    public abstract ShipmentDTO toDTO(Shipment shipment);
+    @IterableMapping(qualifiedByName = "toDto")
+    List<ShipmentDto> toDto(List<Shipment> shipments);
 
-    @IterableMapping(qualifiedByName = "shipmentToShipmentDTO")
-    public abstract List<ShipmentDTO> toDTO(List<Shipment> shipments);
-
-    @Mapping(target = "packets", source = "packetIds", qualifiedByName = "mapPackets")
-    public abstract Shipment toEntity(ShipmentForm form);
-
-    @Named("mapPacketDTOs")
-    protected List<PacketDTO> mapPacketDTOs(List<Packet> packets) {
-        return packets.stream().map(packet -> packetMapper.toDTO(packet)).toList();
-    }
-
-
-    @Named("mapPackets")
-    protected List<Packet> mapPackets(List<Long> packets) {
-        return packets.stream()
-                .map(packetId -> packetService.getOne(packetId))
-                .toList();
-    }
+    Shipment toEntity(ShipmentForm shipmentForm);
 }

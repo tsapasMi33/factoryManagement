@@ -22,8 +22,6 @@ public class Order extends BaseEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate orderDate;
-
     private LocalDate plannedDeliveryDate;
 
     @Enumerated(EnumType.STRING)

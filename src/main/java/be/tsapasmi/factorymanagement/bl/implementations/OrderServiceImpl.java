@@ -1,10 +1,10 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
+import be.tsapasmi.factorymanagement.bl.interfaces.ClientService;
 import be.tsapasmi.factorymanagement.bl.interfaces.OrderService;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
 import be.tsapasmi.factorymanagement.dal.OrderRepository;
 import be.tsapasmi.factorymanagement.domain.entities.Order;
-import be.tsapasmi.factorymanagement.domain.enums.Step;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +13,16 @@ import org.springframework.stereotype.Service;
 @Getter
 public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepository> implements OrderService {
 
-    public OrderServiceImpl(OrderRepository repo, ProductService productService) {
+    private final ClientService clientService;
+    private final ProductService productService;
+
+
+    public OrderServiceImpl(OrderRepository repo, ClientService clientService, ProductService productService) {
         super(repo, Order.class);
+        this.clientService = clientService;
         this.productService = productService;
     }
 
-    private final ProductService productService;
 
     @Override
     public Class<Order> getResourceClass() {
@@ -27,9 +31,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepositor
 
     @Override
     public Order create(Order entity) {
+
+        entity.setClient(clientService.getOne(entity.getClient().getId()));
+
         Order created = super.create(entity);
-        entity.getProducts()
-                .forEach(product -> productService.startStep(Step.ENCODED, product));
+
+        entity.setProducts(
+                entity.getProducts().stream()
+                        .map(product -> {
+                            product.setOrder(created);
+                            return productService.create(product);
+                        })
+                        .toList()
+        );
+
         return created;
     }
 }

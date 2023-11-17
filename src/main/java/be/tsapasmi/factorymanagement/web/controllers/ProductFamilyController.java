@@ -2,8 +2,8 @@ package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductFamilyService;
 import be.tsapasmi.factorymanagement.web.mappers.ProductFamilyMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.ProductFamilyDTO;
-import be.tsapasmi.factorymanagement.web.models.form.ProductFamilyForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.ProductFamilyDto;
+import be.tsapasmi.factorymanagement.web.models.forms.ProductFamilyForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,13 +22,13 @@ public class ProductFamilyController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductFamilyDTO>> getAllProductFamilies() {
-        return ResponseEntity.ok(mapper.toDTO(service.getAll()));
+    public ResponseEntity<List<ProductFamilyDto>> getAllProductFamilies() {
+        return ResponseEntity.ok(mapper.toDto(service.getAll()));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<ProductFamilyDTO> getProductFamily(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<ProductFamilyDto> getProductFamily(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PostMapping()

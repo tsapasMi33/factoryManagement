@@ -21,13 +21,15 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
 
     private final ProductFamilyService productFamilyService;
     private final ProductStepService productStepService;
+    private final ProductVariantService productVariantService;
 
     public ProductServiceImpl(ProductRepository repo,
                               ProductFamilyService productFamilyService,
-                              ProductStepService productStepService) {
+                              ProductStepService productStepService, ProductVariantService productVariantService) {
         super(repo, Product.class);
         this.productFamilyService = productFamilyService;
         this.productStepService = productStepService;
+        this.productVariantService = productVariantService;
     }
 
 
@@ -54,7 +56,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
     @Override
     public Product startStep(Step targetStep, Long productId) {
 
-        if (targetStep != Step.FINISHED) {
+        if (targetStep.isBatchStep()) {
             throw new SingleProductInBatchStepException();
         }
 
@@ -69,7 +71,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
 
         product.getSteps().add(productStepService.startStep(targetStep, product));
 
-        if (!targetStep.isBatchStep()) {
+        if (!targetStep.isMeasurable()) {
             doNextStep(product);
         }
 
@@ -119,12 +121,18 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
 
     private void doNextStep(Product product) {
         product.setCurrentStep(product.getNextStep());
-        int nextStepIdx = product.getVariant().getProductionPath().indexOf(product.getNextStep()) + 1;
-        if (nextStepIdx < product.getVariant().getProductionPath().size()) {
-            product.setNextStep(product.getVariant().getProductionPath().get(nextStepIdx));
+        int nextStepIdx = product.getVariant().getProductFamily().getProductionPath().indexOf(product.getNextStep()) + 1;
+        if (nextStepIdx < product.getVariant().getProductFamily().getProductionPath().size()) {
+            product.setNextStep(product.getVariant().getProductFamily().getProductionPath().get(nextStepIdx));
         } else {
             product.setNextStep(null);
         }
     }
 
+    @Override
+    public Product create(Product entity) {
+        entity.setVariant(productVariantService.getOne(entity.getVariant().getId()));
+        startStep(Step.ENCODED, entity);
+        return super.create(entity);
+    }
 }

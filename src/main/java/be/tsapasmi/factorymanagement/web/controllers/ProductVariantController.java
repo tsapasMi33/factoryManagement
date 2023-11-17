@@ -2,8 +2,8 @@ package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductVariantService;
 import be.tsapasmi.factorymanagement.web.mappers.ProductVariantMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.ProductVariantDTO;
-import be.tsapasmi.factorymanagement.web.models.form.ProductVariantForm;
+import be.tsapasmi.factorymanagement.web.models.dtos.ProductVariantDto;
+import be.tsapasmi.factorymanagement.web.models.forms.ProductVariantForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,13 +21,13 @@ public class ProductVariantController {
     private final ProductVariantMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductVariantDTO>> getAllProductVariants() {
-        return ResponseEntity.ok(mapper.toDTO(service.getAll()));
+    public ResponseEntity<List<ProductVariantDto>> getAllProductVariants() {
+        return ResponseEntity.ok(mapper.toDto(service.getAll()));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<ProductVariantDTO> getProductVariant(@PathVariable long id) {
-        return ResponseEntity.ok(mapper.toDTO(service.getOne(id)));
+    public ResponseEntity<ProductVariantDto> getProductVariant(@PathVariable long id) {
+        return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
     @PostMapping()

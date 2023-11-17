@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @Getter
-public class PacketServiceImpl extends BaseServiceImpl<Packet,Long, PacketRepository> implements PacketService {
+public class PacketServiceImpl extends BaseServiceImpl<Packet, Long, PacketRepository> implements PacketService {
 
     private final ProductService productService;
 
@@ -36,10 +36,18 @@ public class PacketServiceImpl extends BaseServiceImpl<Packet,Long, PacketReposi
 
     @Override
     public Packet create(Packet entity) {
+
+        entity.setProducts(
+                entity.getProducts().stream()
+                        .map(product -> productService.getOne(product.getId()))
+                        .toList()
+        );
+
         Client client = entity.getProducts().get(0).getOrder().getClient();
-        if (entity.getProducts().stream().anyMatch(product -> product.getOrder().getClient() != client)){
+        if (entity.getProducts().stream().anyMatch(product -> product.getOrder().getClient() != client)) {
             throw new IllegalCollectionException("All Packet products must belong to the same client!");
         }
+
         entity.getProducts()
                 .forEach(product -> productService.startStep(Step.PACKED, product));
 

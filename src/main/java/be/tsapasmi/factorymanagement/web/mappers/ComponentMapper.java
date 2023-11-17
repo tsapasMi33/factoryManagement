@@ -1,18 +1,26 @@
 package be.tsapasmi.factorymanagement.web.mappers;
 
 import be.tsapasmi.factorymanagement.domain.entities.Component;
-import be.tsapasmi.factorymanagement.web.models.dto.ComponentDTO;
-import be.tsapasmi.factorymanagement.web.models.form.ComponentForm;
-import org.mapstruct.Mapper;
+import be.tsapasmi.factorymanagement.web.models.dtos.ComponentDto;
+import be.tsapasmi.factorymanagement.web.models.forms.ComponentForm;
+import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ComponentMapper {
 
-    ComponentDTO toDTO(Component component);
+    @Named("toDto")
+    ComponentDto toDto(Component component);
 
-    List<ComponentDTO> toDTO(List<Component> components);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Component partialUpdate(ComponentDto componentDto, @MappingTarget Component component);
 
-    Component toEntity(ComponentForm form);
+    @IterableMapping(qualifiedByName = "toDto")
+    List<ComponentDto> toDto(List<Component> components);
+
+    Component toEntity(ComponentForm componentForm);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Component partialUpdate(ComponentForm componentForm, @MappingTarget Component component);
 }
