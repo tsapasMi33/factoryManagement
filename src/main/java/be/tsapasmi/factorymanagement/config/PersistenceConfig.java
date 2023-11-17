@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "be.tsapasmi.factorymanagement.dal")

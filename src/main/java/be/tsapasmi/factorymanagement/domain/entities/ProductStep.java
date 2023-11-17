@@ -3,7 +3,6 @@ package be.tsapasmi.factorymanagement.domain.entities;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

@@ -1,6 +1,5 @@
 package be.tsapasmi.factorymanagement.dal;
 
-import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.entities.Packet;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.domain.enums.Step;

@@ -1,6 +1,5 @@
 package be.tsapasmi.factorymanagement.bl.interfaces;
 
-import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 

@@ -4,18 +4,9 @@ import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
 import be.tsapasmi.factorymanagement.bl.exceptions.SingleProductInBatchStepException;
 import be.tsapasmi.factorymanagement.bl.interfaces.*;
 import be.tsapasmi.factorymanagement.dal.ProductRepository;
-import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
-import be.tsapasmi.factorymanagement.domain.entities.ProductVariant;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -78,7 +69,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
 
         product.getSteps().add(productStepService.startStep(targetStep, product));
 
-        if (targetStep == Step.ENCODED || targetStep == Step.PRODUCTION || targetStep == Step.PACKED || targetStep == Step.SENT) {
+        if (!targetStep.isBatchStep()) {
             doNextStep(product);
         }
 

@@ -5,7 +5,6 @@ import be.tsapasmi.factorymanagement.bl.exceptions.IllegalCollectionException;
 import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
 import be.tsapasmi.factorymanagement.bl.interfaces.BatchService;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
-import be.tsapasmi.factorymanagement.bl.interfaces.ProductStepService;
 import be.tsapasmi.factorymanagement.dal.BatchRepository;
 import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.entities.Client;
@@ -58,17 +57,15 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch,Long, BatchRepositor
 
     @Override
     public Batch startStep(Step targetStep, Long batchId) {
-        return switch (targetStep){
-            case ENCODED, PRODUCTION, FINISHED, PACKED, SENT -> throw new BatchInSingleProductStepException();
-            default -> {
-                Batch batch = repository.findById(batchId)
-                        .orElseThrow(() -> new ResourceNotFoundException(batchId, Batch.class));
+        if (!targetStep.isBatchStep()) {
+            throw new BatchInSingleProductStepException();
+        }
+        Batch batch = repository.findById(batchId)
+                .orElseThrow(() -> new ResourceNotFoundException(batchId, Batch.class));
 
-                batch.getProducts()
-                        .forEach(product -> productService.startStep(targetStep,product));
-                yield repository.save(batch);
-            }
-        };
+        batch.getProducts()
+                .forEach(product -> productService.startStep(targetStep,product));
+        return repository.save(batch);
     }
 
     @Override

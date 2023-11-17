@@ -4,7 +4,6 @@ import be.tsapasmi.factorymanagement.bl.interfaces.*;
 import be.tsapasmi.factorymanagement.domain.entities.Client;
 import be.tsapasmi.factorymanagement.domain.entities.Order;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
-import be.tsapasmi.factorymanagement.domain.entities.ProductVariant;
 import be.tsapasmi.factorymanagement.web.models.dto.OrderDTO;
 import be.tsapasmi.factorymanagement.web.models.form.OrderForm;
 import be.tsapasmi.factorymanagement.web.models.form.ProductForm;

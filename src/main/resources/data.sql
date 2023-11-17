@@ -1,3 +1,5 @@
+-- noinspection SpellCheckingInspectionForFile
+
 insert into users (cost_per_minute, enabled, created_by_id, created_date, last_modified_by_id,
                    last_modified_date, password, role, username)
 values (null,true,null,'2023-11-15 20:52:07.000000', 1, '2023-11-15 20:52:07.000000',

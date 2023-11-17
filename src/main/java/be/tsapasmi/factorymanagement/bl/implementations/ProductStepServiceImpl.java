@@ -51,59 +51,48 @@ public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, Pr
             throw new FinishedStepException(targetStep, product);
         }
 
-        return switch (targetStep) {
-            case ENCODED, PRODUCTION, PACKED, SENT -> {
-                step.setProduct(product);
-                step.setStep(targetStep);
-                step.setStart(LocalDateTime.now());
-                step.setFinish(LocalDateTime.now());
-                step.setDuration(Duration.ofSeconds(0));
-                step.setFinished(true);
-                step.setPaused(false);
+        step.setProduct(product);
+        step.setStep(targetStep);
+        step.setStart(LocalDateTime.now());
 
-                yield repository.save(step);
-            }
-            case CUT, BENT, COMBINED, WELDED, ASSEMBLED, FINISHED -> {
-                step.setProduct(product);
-                step.setStep(targetStep);
-                step.setStart(LocalDateTime.now());
-                if (step.isPaused()) {
-                    step.setPaused(false);
-                    step.setDuration(step.getDuration());
-                } else {
-                    step.setDuration(Duration.ofSeconds(0));
-                }
-                step.setFinished(false);
+        if (!targetStep.isMeasurable()) {
+            step.setFinish(LocalDateTime.now());
+            step.setDuration(Duration.ofSeconds(0));
+            step.setFinished(true);
+            step.setPaused(false);
+            return repository.save(step);
+        }
 
-                yield repository.save(step);
-            }
-        };
+        if (step.isPaused()) {
+            step.setPaused(false);
+            step.setDuration(step.getDuration());
+        } else {
+            step.setDuration(Duration.ofSeconds(0));
+        }
+        step.setFinished(false);
+        return repository.save(step);
     }
 
     @Override
     public ProductStep pauseStep(Step targetStep,Product product, int batchSize) {
-        ProductStep step =  repository.findExistingStep(product.getId(), Step.CUT)
+        ProductStep step =  repository.findExistingStep(product.getId(), targetStep)
                 .orElseThrow(() -> new NotStartedStepException(targetStep, product));
 
-        return switch (targetStep) {
-            case ENCODED, PRODUCTION, PACKED, SENT -> throw new IllegalActionOnStep(targetStep, "paused");
-            case CUT, BENT, COMBINED, WELDED, ASSEMBLED, FINISHED -> {
+        if (!targetStep.isMeasurable()) {
+            throw new IllegalActionOnStep(targetStep, "paused");
+        }
+        if (step.isFinished()){
+            throw new FinishedStepException(targetStep, product);
+        }
 
-                if (step.isFinished()){
-                    throw new FinishedStepException(targetStep, product);
-                }
+        if (step.isPaused()){
+            throw new PausedStepException(targetStep, product);
+        }
 
-                if (step.isPaused()){
-                    throw new PausedStepException(targetStep, product);
-                }
+        step.setDuration(Duration.between(step.getStart(),LocalDateTime.now()).dividedBy(batchSize));
+        step.setPaused(true);
 
-                step.setDuration(Duration.between(step.getStart(),LocalDateTime.now()).dividedBy(batchSize));
-                step.setPaused(true);
-
-                yield repository.save(step);
-            }
-        };
-
+        return repository.save(step);
     }
 
     @Override
@@ -111,24 +100,21 @@ public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, Pr
         ProductStep step =  repository.findExistingStep(product.getId(), targetStep)
                 .orElseThrow(() -> new NotStartedStepException(targetStep, product));
 
-        return switch (targetStep) {
-            case ENCODED, PRODUCTION, PACKED, SENT -> throw  new IllegalActionOnStep(targetStep, "finished");
-            case CUT, BENT, COMBINED, WELDED, ASSEMBLED, FINISHED -> {
+        if (!targetStep.isMeasurable()) {
+            throw  new IllegalActionOnStep(targetStep, "finished");
+        }
+        if (step.isFinished()){
+            throw new FinishedStepException(targetStep, product);
+        }
 
-                if (step.isFinished()){
-                    throw new FinishedStepException(targetStep, product);
-                }
+        if (step.isPaused()){
+            throw new PausedStepException(targetStep, product);
+        }
 
-                if (step.isPaused()){
-                    throw new PausedStepException(targetStep, product);
-                }
+        step.setFinish(LocalDateTime.now());
+        step.setDuration(step.getDuration().plus(Duration.between(step.getStart(),step.getFinish())).dividedBy(batchSize));
+        step.setFinished(true);
 
-                step.setFinish(LocalDateTime.now());
-                step.setDuration(step.getDuration().plus(Duration.between(step.getStart(),step.getFinish())).dividedBy(batchSize));
-                step.setFinished(true);
-
-                yield repository.save(step);
-            }
-        };
+        return repository.save(step);
     }
 }

@@ -3,7 +3,6 @@ package be.tsapasmi.factorymanagement.web.controllers;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import be.tsapasmi.factorymanagement.web.mappers.ProductMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.BatchDTO;
 import be.tsapasmi.factorymanagement.web.models.dto.ProductDTO;
 import be.tsapasmi.factorymanagement.web.models.form.ProductForm;
 import jakarta.validation.Valid;

@@ -1,13 +1,8 @@
 package be.tsapasmi.factorymanagement.web.controllers;
 
-import be.tsapasmi.factorymanagement.bl.interfaces.PacketService;
 import be.tsapasmi.factorymanagement.bl.interfaces.ShipmentService;
-import be.tsapasmi.factorymanagement.domain.enums.Step;
-import be.tsapasmi.factorymanagement.web.mappers.PacketMapper;
 import be.tsapasmi.factorymanagement.web.mappers.ShipmentMapper;
-import be.tsapasmi.factorymanagement.web.models.dto.PacketDTO;
 import be.tsapasmi.factorymanagement.web.models.dto.ShipmentDTO;
-import be.tsapasmi.factorymanagement.web.models.form.PacketForm;
 import be.tsapasmi.factorymanagement.web.models.form.ShipmentForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

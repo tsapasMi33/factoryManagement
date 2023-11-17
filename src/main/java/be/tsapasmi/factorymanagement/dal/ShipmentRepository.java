@@ -1,7 +1,6 @@
 package be.tsapasmi.factorymanagement.dal;
 
 import be.tsapasmi.factorymanagement.domain.entities.Packet;
-import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.domain.entities.Shipment;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -3,7 +3,6 @@ package be.tsapasmi.factorymanagement.bl.implementations;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductFamilyService;
 import be.tsapasmi.factorymanagement.dal.ProductFamilyRepository;
 import be.tsapasmi.factorymanagement.domain.entities.ProductFamily;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 

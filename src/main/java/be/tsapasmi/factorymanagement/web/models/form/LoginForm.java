@@ -1,7 +1,6 @@
 package be.tsapasmi.factorymanagement.web.models.form;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

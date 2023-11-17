@@ -4,7 +4,6 @@ import be.tsapasmi.factorymanagement.bl.exceptions.IllegalCollectionException;
 import be.tsapasmi.factorymanagement.bl.interfaces.PacketService;
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductService;
 import be.tsapasmi.factorymanagement.dal.PacketRepository;
-import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.entities.Client;
 import be.tsapasmi.factorymanagement.domain.entities.Packet;
 import be.tsapasmi.factorymanagement.domain.enums.Step;

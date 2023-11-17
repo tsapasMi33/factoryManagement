@@ -2,7 +2,6 @@ package be.tsapasmi.factorymanagement;
 
 import be.tsapasmi.factorymanagement.bl.exceptions.*;
 import be.tsapasmi.factorymanagement.web.models.dto.ErrorDTO;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,7 +22,7 @@ public class ControllerAdvisor {
             ResourceNotFoundException.class,
             UserNotFoundException.class
     })
-    public ResponseEntity<ErrorDTO> handle(ResourceNotFoundException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorDTO> handle(ResourceNotFoundException ex) {
         ErrorDTO body = ErrorDTO.builder(LocalDateTime.now(), HttpStatus.NOT_FOUND.value())
                 .putError("message", ex.getMessage())
                 .build();
@@ -37,7 +36,7 @@ public class ControllerAdvisor {
             NotStartedStepException.class,
             PausedStepException.class
     })
-    public ResponseEntity<ErrorDTO> handle(IllegalCollectionException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorDTO> handle(IllegalCollectionException ex) {
         ErrorDTO body = ErrorDTO.builder(LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY.value())
                 .putError("message", ex.getMessage())
                 .build();
@@ -53,7 +52,7 @@ public class ControllerAdvisor {
             UserOccupiedException.class,
             UserStateException.class
     })
-    public ResponseEntity<ErrorDTO> handle(RuntimeException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorDTO> handle(RuntimeException ex) {
         ErrorDTO body = ErrorDTO.builder(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value())
                 .putError("message", ex.getMessage())
                 .build();
@@ -62,7 +61,7 @@ public class ControllerAdvisor {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorDTO> handle(MethodArgumentNotValidException ex, HttpServletRequest request){
+    public ResponseEntity<ErrorDTO> handle(MethodArgumentNotValidException ex){
 
         Map<String, Object> errors = new HashMap<>();
 

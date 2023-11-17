@@ -21,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 @AllArgsConstructor
 public class JWTProvider {
 
+    @SuppressWarnings("SpellCheckingInspection")
     private final String secret = "qzwV$a5YBx#IJbGpCa^eVYrA^]u::;1#]|E~mYg0(+ZfOZ9GdK*Vc:->GYmJZzX?p_qU7wXv:;9O)!LQRd1ex]:iZ1B+xZfA^~#T*L&Q?8/<$O`]Ttzm6LpZ";
 
     private final UserDetailsService userDetailsService;
