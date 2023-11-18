@@ -13,14 +13,8 @@ public interface OrderMapper {
     @Named("toDto")
     OrderDto toDto(Order order);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Order partialUpdate(OrderDto orderDto, @MappingTarget Order order);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<OrderDto> toDto(List<Order> orders);
 
     Order toEntity(OrderForm orderForm);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Order partialUpdate(OrderForm orderForm, @MappingTarget Order order);
 }

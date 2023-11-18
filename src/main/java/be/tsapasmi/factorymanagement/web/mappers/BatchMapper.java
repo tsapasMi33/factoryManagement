@@ -22,9 +22,6 @@ public interface BatchMapper {
         return products.get(0).getCurrentStep();
     }
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Batch partialUpdate(BatchDto batchDto, @MappingTarget Batch batch);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<BatchDto> toDto(List<Batch> batches);
 

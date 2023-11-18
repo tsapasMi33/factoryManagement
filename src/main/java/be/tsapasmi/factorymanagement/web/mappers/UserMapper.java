@@ -12,9 +12,6 @@ public interface UserMapper {
     @Named("toDto")
     UserDto toDto(User user);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    User partialUpdate(UserDto userDto, @MappingTarget User user);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<UserDto> toDto(List<User> users);
 

@@ -13,9 +13,6 @@ public interface ShipmentMapper {
     @Named("toDto")
     ShipmentDto toDto(Shipment shipment);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Shipment partialUpdate(ShipmentDto shipmentDto, @MappingTarget Shipment shipment);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<ShipmentDto> toDto(List<Shipment> shipments);
 

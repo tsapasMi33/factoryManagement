@@ -23,9 +23,6 @@ public interface PacketMapper {
     @IterableMapping(qualifiedByName = "toDto")
     List<PacketDto> toDto(List<Packet> packets);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Packet partialUpdate(PacketDto packetDto, @MappingTarget Packet packet);
-
     Packet toEntity(PacketForm packetForm);
 
 }

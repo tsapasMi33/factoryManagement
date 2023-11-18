@@ -13,14 +13,8 @@ public interface ProductVariantMapper {
     @Named("toDto")
     ProductVariantDto toDto(ProductVariant productVariant);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ProductVariant partialUpdate(ProductVariantDto productVariantDto, @MappingTarget ProductVariant productVariant);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<ProductVariantDto> toDto(List<ProductVariant> productVariants);
 
     ProductVariant toEntity(ProductVariantForm productVariantForm);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ProductVariant partialUpdate(ProductVariantForm productVariantForm, @MappingTarget ProductVariant productVariant);
 }

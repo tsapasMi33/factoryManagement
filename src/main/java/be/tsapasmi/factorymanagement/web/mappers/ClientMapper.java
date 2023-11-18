@@ -13,9 +13,6 @@ public interface ClientMapper {
     @Named("toDto")
     ClientDto toDto(Client client);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Client partialUpdate(ClientDto clientDto, @MappingTarget Client client);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<ClientDto> toDto(List<Client> clients);
 

@@ -13,14 +13,8 @@ public interface ProductFamilyMapper {
     @Named("toDto")
     ProductFamilyDto toDto(ProductFamily productFamily);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ProductFamily partialUpdate(ProductFamilyDto productFamilyDto, @MappingTarget ProductFamily productFamily);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<ProductFamilyDto> toDto(List<ProductFamily> productFamilies);
 
     ProductFamily toEntity(ProductFamilyForm productFamilyForm);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ProductFamily partialUpdate(ProductFamilyForm productFamilyForm, @MappingTarget ProductFamily productFamily);
 }

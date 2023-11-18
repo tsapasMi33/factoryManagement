@@ -13,14 +13,8 @@ public interface ComponentMapper {
     @Named("toDto")
     ComponentDto toDto(Component component);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Component partialUpdate(ComponentDto componentDto, @MappingTarget Component component);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<ComponentDto> toDto(List<Component> components);
 
     Component toEntity(ComponentForm componentForm);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Component partialUpdate(ComponentForm componentForm, @MappingTarget Component component);
 }

@@ -12,16 +12,9 @@ public interface ProductMapper {
 
     @Named("toDto")
     ProductDto toDto(Product product);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Product partialUpdate(ProductDto productDto, @MappingTarget Product product);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<ProductDto> toDto(List<Product> products);
 
     Product toEntity(ProductForm productForm);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Product partialUpdate(ProductForm productForm, @MappingTarget Product product);
 
 }
