@@ -7,11 +7,12 @@ import be.tsapasmi.factorymanagement.web.models.dtos.ProductDto;
 import be.tsapasmi.factorymanagement.web.models.forms.ProductForm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/product")
@@ -22,11 +23,20 @@ public class ProductController {
     private final ProductMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDto>> getAllProducts(@RequestParam(required = false)Step currentStep,
-                                                           @RequestParam(required = false)Step nextStep,
-                                                           @RequestParam(required = false)Long productFamilyId
-                                                           ) {
-        return ResponseEntity.ok(mapper.toDto(service.findAllByCriteria(currentStep, nextStep,productFamilyId)));
+    public ResponseEntity<Page<ProductDto>> getAllProducts(
+            @RequestParam int page,
+            @RequestParam(required = false)Step currentStep,
+            @RequestParam(required = false)Step nextStep,
+            @RequestParam(required = false)Long productFamilyId,
+            @RequestParam(required = false)Long batchId,
+            @RequestParam(required = false)Long clientId,
+            @RequestParam(required = false)LocalDate deliveryDate,
+            @RequestParam(required = false) LocalDate orderDate,
+            @RequestParam(required = false)Long packetId,
+            @RequestParam(required = false)String productVariantCode
+    ) {
+        return ResponseEntity.ok(service.findAllByCriteria(page, currentStep, nextStep,productFamilyId, batchId, clientId, deliveryDate,orderDate,packetId,productVariantCode)
+                        .map(mapper::toDto));
     }
 
     @GetMapping("/{id:^[0-9]+$}")

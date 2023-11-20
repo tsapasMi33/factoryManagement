@@ -8,9 +8,12 @@ import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import jakarta.persistence.criteria.Predicate;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,21 +22,18 @@ import java.util.List;
 @Getter
 public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRepository> implements ProductService {
 
-    private final ProductFamilyService productFamilyService;
     private final ProductStepService productStepService;
     private final ProductVariantService productVariantService;
 
-    public ProductServiceImpl(ProductRepository repo,
-                              ProductFamilyService productFamilyService,
-                              ProductStepService productStepService, ProductVariantService productVariantService) {
+    public ProductServiceImpl(ProductRepository repo, ProductStepService productStepService, ProductVariantService productVariantService) {
         super(repo, Product.class);
-        this.productFamilyService = productFamilyService;
+
         this.productStepService = productStepService;
         this.productVariantService = productVariantService;
     }
 
 
-    public List<Product> findAllByCriteria(Step currentStep, Step nextStep, Long productFamilyId) {
+    public Page<Product> findAllByCriteria(int page, Step currentStep, Step nextStep, Long productFamilyId, Long batchId, Long clientId, LocalDate deliveryDate, LocalDate orderDate, Long packetId, String productVariantCode) {
         Specification<Product> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -44,13 +44,31 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
                 predicates.add(criteriaBuilder.equal(root.get("nextStep"), nextStep));
             }
             if (productFamilyId != null) {
-                predicates.add(criteriaBuilder.equal(root.get("variant").get("productFamily"), productFamilyService.getOne(productFamilyId)));
+                predicates.add(criteriaBuilder.equal(root.get("variant").get("productFamily").get("id"),productFamilyId));
+            }
+            if (batchId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("batch").get("id"), batchId));
+            }
+            if (clientId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("order").get("client").get("id"), clientId));
+            }
+            if (deliveryDate != null) {
+                predicates.add(criteriaBuilder.equal(root.get("order").get("plannedDeliveryDate"), deliveryDate));
+            }
+            if (orderDate != null) {
+                predicates.add(criteriaBuilder.equal(root.get("order").get("createdDate"), orderDate));
+            }
+            if (packetId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("packet").get("id"), packetId));
+            }
+            if (productVariantCode != null) {
+                predicates.add(criteriaBuilder.like(root.get("variant").get("code"), productVariantCode));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
 
-        return repository.findAll(specification);
+        return repository.findAll(specification, PageRequest.of(page - 1, 25));
     }
 
     @Override
