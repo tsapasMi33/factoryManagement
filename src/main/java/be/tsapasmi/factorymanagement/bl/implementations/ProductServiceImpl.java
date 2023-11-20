@@ -62,7 +62,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
                 predicates.add(criteriaBuilder.equal(root.get("packet").get("id"), packetId));
             }
             if (productVariantCode != null) {
-                predicates.add(criteriaBuilder.like(root.get("variant").get("code"), productVariantCode));
+                predicates.add(criteriaBuilder.like(root.get("variant").get("code"), "%"+productVariantCode+"%"));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

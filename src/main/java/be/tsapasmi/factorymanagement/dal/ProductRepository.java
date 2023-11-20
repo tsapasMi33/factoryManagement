@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
-    Page<Product> findAll(Specification<Product> specification, Pageable pageRequest);
+    Page<Product> findAll(Specification<Product> specification, Pageable pageable);
 
 }

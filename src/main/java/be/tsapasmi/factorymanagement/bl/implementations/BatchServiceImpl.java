@@ -14,6 +14,8 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +42,7 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch, Long, BatchReposito
     }
 
     @Override
-    public List<Batch> findAllByCriteria(Step currentStep, Step nextStep) {
+    public Page<Batch> findAllByCriteria(int page, Step currentStep, Step nextStep) {
         Specification<Batch> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             Join<Batch, Product> productJoin = root.join("products", JoinType.INNER);
@@ -54,7 +56,7 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch, Long, BatchReposito
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
 
-        return repository.findAll(specification);
+        return repository.findAll(specification, PageRequest.of(page, 10));
     }
 
     @Override

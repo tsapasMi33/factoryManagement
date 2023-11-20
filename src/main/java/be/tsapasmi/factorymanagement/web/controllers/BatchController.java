@@ -7,6 +7,7 @@ import be.tsapasmi.factorymanagement.web.models.forms.BatchForm;
 import be.tsapasmi.factorymanagement.web.models.dtos.BatchDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +23,12 @@ public class BatchController {
     private final BatchMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<BatchDto>> getBatches(@RequestParam(required = false) Step currentStep,
-                                                     @RequestParam(required = false) Step nextStep) {
-        return ResponseEntity.ok(mapper.toDto(service.findAllByCriteria(currentStep,nextStep)));
+    public ResponseEntity<Page<BatchDto>> getBatches(
+            @RequestParam int page,
+            @RequestParam(required = false) Step currentStep,
+            @RequestParam(required = false) Step nextStep) {
+        return ResponseEntity.ok(service.findAllByCriteria(page, currentStep,nextStep)
+                .map(mapper::toDto));
     }
 
     @GetMapping("/{id:^[0-9]+$}")
