@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.BatchService;
+import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import be.tsapasmi.factorymanagement.web.mappers.BatchMapper;
 import be.tsapasmi.factorymanagement.web.models.forms.BatchForm;
@@ -27,6 +28,8 @@ public class BatchController {
             @RequestParam int page,
             @RequestParam(required = false) Step currentStep,
             @RequestParam(required = false) Step nextStep) {
+        Page<Batch> b = service.findAllByCriteria(page, currentStep,nextStep);
+        System.out.println(b.getContent().size());
         return ResponseEntity.ok(service.findAllByCriteria(page, currentStep,nextStep)
                 .map(mapper::toDto));
     }

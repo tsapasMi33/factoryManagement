@@ -10,9 +10,7 @@ import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.entities.Client;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.*;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,19 +42,21 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch, Long, BatchReposito
     @Override
     public Page<Batch> findAllByCriteria(int page, Step currentStep, Step nextStep) {
         Specification<Batch> specification = (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            Join<Batch, Product> productJoin = root.join("products", JoinType.INNER);
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<Product> productSubqueryRoot = subquery.from(Product.class);
+            subquery.select(criteriaBuilder.literal(1L))
+                    .where(criteriaBuilder.and(
+                            criteriaBuilder.equal(productSubqueryRoot.get("batch"), root),
+                            criteriaBuilder.or(
+                                    criteriaBuilder.equal(productSubqueryRoot.get("currentStep"), currentStep),
+                                    criteriaBuilder.equal(productSubqueryRoot.get("nextStep"), nextStep)
+                            )
+                    ));
 
-            if (currentStep != null) {
-                predicates.add(criteriaBuilder.equal(productJoin.get("currentStep"), currentStep));
-            }
-            if (nextStep != null) {
-                predicates.add(criteriaBuilder.equal(productJoin.get("nextStep"), nextStep));
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            return criteriaBuilder.exists(subquery);
         };
 
-        return repository.findAll(specification, PageRequest.of(page, 10));
+        return repository.findAll(specification, PageRequest.of(page - 1, 5));
     }
 
     @Override

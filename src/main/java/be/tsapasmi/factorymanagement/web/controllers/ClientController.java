@@ -37,7 +37,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id:^[0-9]+$}")
-    public ResponseEntity<HttpStatus> updateClient(@PathVariable long id, @Valid @RequestBody ClientForm form) {
+    public ResponseEntity<HttpStatus> updateClient(@PathVariable long id,@Valid @RequestBody ClientForm form) {
         service.update(id, mapper.toEntity(form));
         return ResponseEntity.ok().build();
     }

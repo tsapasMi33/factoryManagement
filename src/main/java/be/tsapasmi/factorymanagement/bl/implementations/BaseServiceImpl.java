@@ -41,10 +41,9 @@ public abstract class BaseServiceImpl<T extends BaseEntity<K>, K,R extends JpaRe
 
     @Override
     public T update(K id, T entity) {
-        if (getRepository().existsById(id)) {
+        if (!getRepository().existsById(id)) {
             throw new ResourceNotFoundException(id, getResourceClass());
         }
-        entity.setId(id);
         return getRepository().save(entity);
     }
 
