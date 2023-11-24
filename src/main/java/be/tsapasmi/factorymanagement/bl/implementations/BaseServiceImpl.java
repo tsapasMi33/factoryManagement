@@ -44,6 +44,7 @@ public abstract class BaseServiceImpl<T extends BaseEntity<K>, K,R extends JpaRe
         if (!getRepository().existsById(id)) {
             throw new ResourceNotFoundException(id, getResourceClass());
         }
+        entity.setId(id);
         return getRepository().save(entity);
     }
 
