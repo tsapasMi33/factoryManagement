@@ -8,6 +8,9 @@ import be.tsapasmi.factorymanagement.domain.entities.Order;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 
 @Service
 @Getter
@@ -33,6 +36,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepositor
     public Order create(Order entity) {
 
         entity.setClient(clientService.getOne(entity.getClient().getId()));
+        entity.setCode(generateCode());
 
         Order created = super.create(entity);
 
@@ -46,5 +50,19 @@ public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepositor
         );
 
         return created;
+    }
+
+    private String generateCode() {
+        LocalDate today = LocalDate.now();
+        Optional<Order> lastOrder = repository.getLastOrder();
+        if (lastOrder.isPresent()){
+            if (!(lastOrder.get().getCreatedDate().getMonthValue() < today.getMonthValue())) {
+                long code = Long.parseLong(lastOrder.get().getCode());
+                return String.valueOf(++code);
+            }
+        }
+        return String.valueOf(today.getYear()) +
+                String.valueOf(today.getMonthValue() < 10 ? '0' + today.getMonthValue() : today.getMonthValue()) +
+                "0001";
     }
 }

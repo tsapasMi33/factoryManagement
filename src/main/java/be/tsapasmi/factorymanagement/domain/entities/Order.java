@@ -24,6 +24,8 @@ public class Order extends BaseEntity<Long> {
 
     private LocalDate plannedDeliveryDate;
 
+    private String code;
+
     @Enumerated(EnumType.STRING)
     private DeliveryPreference deliveryPreference;
 

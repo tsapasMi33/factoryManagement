@@ -23,6 +23,8 @@ public class Product extends BaseEntity<Long> {
 
     private String comments;
 
+    private String code;
+
     @Enumerated(EnumType.STRING)
     private Step currentStep;
 
