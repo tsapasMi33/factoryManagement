@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
  */
 public record ProductDto(Long id, String comments, Step currentStep, ProductVariantDto variant, Long orderId,
                          Long batchId, String batchCode, Long packetId, String packetCode,
-                         OrderDtoInProductDto order) implements Serializable {
+                         OrderDtoInProductDto order, String code) implements Serializable {
     /**
      * DTO for {@link be.tsapasmi.factorymanagement.domain.entities.Order}
      */
-    public record OrderDtoInProductDto(LocalDateTime createdDate, Long id, LocalDate plannedDeliveryDate,
+    public record OrderDtoInProductDto(LocalDateTime createdDate, Long id, LocalDate plannedDeliveryDate, String code,
                                        ProductDto.OrderDtoInProductDto.ClientDto client) implements Serializable {
         /**
          * DTO for {@link be.tsapasmi.factorymanagement.domain.entities.Client}

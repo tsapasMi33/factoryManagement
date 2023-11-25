@@ -21,7 +21,7 @@ public interface PacketRepository extends JpaRepository<Packet,Long> {
 
     @Query("""
     SELECT p FROM Packet p
-    JOIN Product pr
+    JOIN Product pr on pr.packet = p
     WHERE pr.currentStep = :currentStep
 """)
     List<Packet> findAllAtStep(Step currentStep);

@@ -22,7 +22,7 @@ public class PacketController {
     private final PacketMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<PacketDto>> getPackets(@RequestParam(required = false) Step currentStep) {
+    public ResponseEntity<List<PacketDto>> getPackets(@RequestParam Step currentStep) {
         return ResponseEntity.ok(mapper.toDto(service.findAllAtStep(currentStep)));
     }
 
