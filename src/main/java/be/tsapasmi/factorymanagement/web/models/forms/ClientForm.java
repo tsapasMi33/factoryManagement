@@ -10,6 +10,6 @@ import java.io.Serializable;
 /**
  * DTO for {@link be.tsapasmi.factorymanagement.domain.entities.Client}
  */
-public record ClientForm(@NotNull @NotBlank String name, String companyType, @NotNull Address address,
+public record ClientForm(@NotBlank String name, String companyType, @NotNull Address address,
                          @Range(min = 0, max = 60) int discountPercentage) implements Serializable {
 }
