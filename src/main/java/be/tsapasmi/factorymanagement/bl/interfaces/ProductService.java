@@ -21,4 +21,6 @@ public interface ProductService extends BaseService<Product,Long> {
     void finishStep(Step targetStep, Long productId);
 
     void finishStep(Step targetStep, Product product, int batchSize);
+
+    void archiveAll();
 }

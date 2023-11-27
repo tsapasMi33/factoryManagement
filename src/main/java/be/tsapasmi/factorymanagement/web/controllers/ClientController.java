@@ -25,6 +25,11 @@ public class ClientController {
         return ResponseEntity.ok(mapper.toDto(service.getAll()));
     }
 
+    @GetMapping("/all-active")
+    public ResponseEntity<List<ClientDto>> getAllActiveClients() {
+        return ResponseEntity.ok(mapper.toDto(service.getAllActiveClients()));
+    }
+
     @GetMapping("/{id:^[0-9]+$}")
     public ResponseEntity<ClientDto> getClient(@PathVariable long id) {
         return ResponseEntity.ok(mapper.toDto(service.getOne(id)));

@@ -72,4 +72,10 @@ public class ProductController {
         service.finishStep(step, productId);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/archive")
+    public ResponseEntity<HttpStatus> archiveAll() {
+        service.archiveAll();
+        return ResponseEntity.ok().build();
+    }
 }

@@ -37,6 +37,8 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
         Specification<Product> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            predicates.add(criteriaBuilder.equal(root.get("archived"), false));
+
             if (currentStep != null) {
                 predicates.add(criteriaBuilder.equal(root.get("currentStep"), currentStep));
             }
@@ -135,6 +137,11 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
         product.getSteps().add(product.getSteps().size() - 1,productStepService.finishStep(targetStep, product, batchSize));
         doNextStep(product);
         repository.save(product);
+    }
+
+    @Override
+    public void archiveAll() {
+        repository.archiveAll();
     }
 
     private void doNextStep(Product product) {

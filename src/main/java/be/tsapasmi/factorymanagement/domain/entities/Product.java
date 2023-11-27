@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "Product", indexes = {
+        @Index(name = "idx_product_archived", columnList = "archived")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -45,4 +48,6 @@ public class Product extends BaseEntity<Long> {
 
     @ManyToOne
     private Packet packet;
+
+    private boolean archived;
 }

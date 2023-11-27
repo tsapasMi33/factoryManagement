@@ -6,6 +6,8 @@ import be.tsapasmi.factorymanagement.domain.entities.Client;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @Getter
@@ -14,6 +16,10 @@ public class ClientServiceImpl extends BaseServiceImpl<Client,Long, ClientReposi
 
     public ClientServiceImpl(ClientRepository repo) {
         super(repo, Client.class);
+    }
+
+    public List<Client> getAllActiveClients(){
+        return repository.getAllActive();
     }
 
 
