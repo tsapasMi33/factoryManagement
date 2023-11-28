@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.ProductFamilyService;
+import be.tsapasmi.factorymanagement.domain.enums.Step;
 import be.tsapasmi.factorymanagement.web.mappers.ProductFamilyMapper;
 import be.tsapasmi.factorymanagement.web.models.dtos.ProductFamilyDto;
 import be.tsapasmi.factorymanagement.web.models.forms.ProductFamilyForm;
@@ -24,6 +25,11 @@ public class ProductFamilyController {
     @GetMapping("/all")
     public ResponseEntity<List<ProductFamilyDto>> getAllProductFamilies() {
         return ResponseEntity.ok(mapper.toDto(service.getAll()));
+    }
+
+    @GetMapping("/all-active")
+    public ResponseEntity<List<ProductFamilyDto>> getAllActive(@RequestParam(required = false) Step productsAtStep) {
+        return ResponseEntity.ok(mapper.toDto(service.getAllActive(productsAtStep)));
     }
 
     @GetMapping("/{id:^[0-9]+$}")

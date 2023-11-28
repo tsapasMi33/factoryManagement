@@ -12,6 +12,10 @@ import java.util.List;
 public interface ProductMapper {
 
     @Named("toDto")
+    @Mapping(target = "batchId", source = "batch.id")
+    @Mapping(target = "batchCode", source = "batch.code")
+    @Mapping(target = "packetId", source = "packet.id")
+    @Mapping(target = "packetCode", source = "packet.code")
     ProductDto toDto(Product product);
     @IterableMapping(qualifiedByName = "toDto")
     List<ProductDto> toDto(List<Product> products);

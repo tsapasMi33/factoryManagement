@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.ClientService;
+import be.tsapasmi.factorymanagement.domain.enums.Step;
 import be.tsapasmi.factorymanagement.web.mappers.ClientMapper;
 import be.tsapasmi.factorymanagement.web.models.dtos.ClientDto;
 import be.tsapasmi.factorymanagement.web.models.forms.ClientForm;
@@ -26,8 +27,8 @@ public class ClientController {
     }
 
     @GetMapping("/all-active")
-    public ResponseEntity<List<ClientDto>> getAllActiveClients() {
-        return ResponseEntity.ok(mapper.toDto(service.getAllActiveClients()));
+    public ResponseEntity<List<ClientDto>> getAllActiveClients(@RequestParam(required = false)Step productsAtStep) {
+        return ResponseEntity.ok(mapper.toDto(service.getAllActiveClients(productsAtStep)));
     }
 
     @GetMapping("/{id:^[0-9]+$}")

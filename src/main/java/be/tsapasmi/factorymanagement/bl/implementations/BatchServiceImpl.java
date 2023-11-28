@@ -95,6 +95,11 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch, Long, BatchReposito
     }
 
     @Override
+    public List<Batch> getAllActive() {
+        return repository.findAllActive();
+    }
+
+    @Override
     public Batch create(Batch entity) {
         entity.setProducts(
                 entity.getProducts().stream()

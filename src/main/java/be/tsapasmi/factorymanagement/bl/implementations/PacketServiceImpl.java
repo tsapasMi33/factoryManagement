@@ -39,6 +39,11 @@ public class PacketServiceImpl extends BaseServiceImpl<Packet, Long, PacketRepos
     }
 
     @Override
+    public List<Packet> findAllActive() {
+        return repository.findAllActive();
+    }
+
+    @Override
     public Packet create(Packet entity) {
 
         entity.setProducts(

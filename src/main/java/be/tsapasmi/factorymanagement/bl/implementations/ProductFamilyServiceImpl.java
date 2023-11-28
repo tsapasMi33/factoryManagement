@@ -28,4 +28,12 @@ public class ProductFamilyServiceImpl extends BaseServiceImpl<ProductFamily,Long
         entity.setProductionPath(path);
         return super.create(entity);
     }
+
+    @Override
+    public List<ProductFamily> getAllActive(Step productsAtStep) {
+        if (productsAtStep != null) {
+            return repository.getAllActiveWithProductsAtStep(productsAtStep);
+        }
+        return repository.findAllActive();
+    }
 }

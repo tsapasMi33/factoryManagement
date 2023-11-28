@@ -3,6 +3,7 @@ package be.tsapasmi.factorymanagement.bl.implementations;
 import be.tsapasmi.factorymanagement.bl.interfaces.ClientService;
 import be.tsapasmi.factorymanagement.dal.ClientRepository;
 import be.tsapasmi.factorymanagement.domain.entities.Client;
+import be.tsapasmi.factorymanagement.domain.enums.Step;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,10 @@ public class ClientServiceImpl extends BaseServiceImpl<Client,Long, ClientReposi
         super(repo, Client.class);
     }
 
-    public List<Client> getAllActiveClients(){
+    public List<Client> getAllActiveClients(Step productsAtStep){
+        if (productsAtStep != null) {
+            return repository.getAllActiveWithProductsAtStep(productsAtStep);
+        }
         return repository.getAllActive();
     }
 

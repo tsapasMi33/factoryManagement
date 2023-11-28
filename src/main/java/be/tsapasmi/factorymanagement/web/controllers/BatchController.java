@@ -28,10 +28,13 @@ public class BatchController {
             @RequestParam int page,
             @RequestParam(required = false) Step currentStep,
             @RequestParam(required = false) Step nextStep) {
-        Page<Batch> b = service.findAllByCriteria(page, currentStep,nextStep);
-        System.out.println(b.getContent().size());
         return ResponseEntity.ok(service.findAllByCriteria(page, currentStep,nextStep)
                 .map(mapper::toDto));
+    }
+
+    @GetMapping("all-active")
+    public ResponseEntity<List<BatchDto>> getAllActive() {
+        return ResponseEntity.ok(service.getAllActive().stream().map(mapper::toDto).toList());
     }
 
     @GetMapping("/{id:^[0-9]+$}")

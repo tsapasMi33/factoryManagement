@@ -34,4 +34,13 @@ public interface PacketRepository extends JpaRepository<Packet,Long> {
     WHERE p IN :products
 """)
     void updateProducts(Packet packet, List<Product> products);
+
+
+    @Query("""
+    SELECT pa FROM Packet pa
+    JOIN Product p ON p.packet = pa
+    WHERE p.archived = false
+""")
+    List<Packet> findAllActive();
+
 }

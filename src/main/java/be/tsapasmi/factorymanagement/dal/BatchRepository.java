@@ -33,6 +33,12 @@ public interface BatchRepository extends JpaRepository<Batch,Long> {
 
     Page<Batch> findAll(Specification<Batch> specification, Pageable pageable);
 
+    @Query("""
+    SELECT b FROM Batch b
+    JOIN Product p on p.batch = b
+    AND p.archived = false
+""")
+    List<Batch> findAllActive();
 }
 
 

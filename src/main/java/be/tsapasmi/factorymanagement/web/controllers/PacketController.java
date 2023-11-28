@@ -26,6 +26,11 @@ public class PacketController {
         return ResponseEntity.ok(mapper.toDto(service.findAllAtStep(currentStep)));
     }
 
+    @GetMapping("/all-active")
+    public ResponseEntity<List<PacketDto>> getActivePackets() {
+        return ResponseEntity.ok(mapper.toDto(service.findAllActive()));
+    }
+
     @GetMapping("/{id:^[0-9]+$}")
     public ResponseEntity<PacketDto> getPacket(@PathVariable long id) {
         return ResponseEntity.ok(mapper.toDto(service.getOne(id)));

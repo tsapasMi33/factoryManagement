@@ -31,7 +31,7 @@ public class ProductController {
             @RequestParam(required = false)Long batchId,
             @RequestParam(required = false)Long clientId,
             @RequestParam(required = false)LocalDate deliveryDate,
-            @RequestParam(required = false) LocalDate orderDate,
+            @RequestParam(required = false)LocalDate orderDate,
             @RequestParam(required = false)Long packetId,
             @RequestParam(required = false)String productVariantCode
     ) {

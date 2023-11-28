@@ -10,4 +10,6 @@ public interface PacketService extends BaseService<Packet,Long> {
     Packet getLastPacket();
 
     List<Packet> findAllAtStep(Step step);
+
+    List<Packet> findAllActive();
 }

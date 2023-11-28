@@ -7,13 +7,14 @@ import lombok.Value;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * DTO for {@link be.tsapasmi.factorymanagement.domain.entities.Product}
  */
 public record ProductDto(Long id, String comments, Step currentStep, ProductVariantDto variant, Long orderId,
                          Long batchId, String batchCode, Long packetId, String packetCode,
-                         OrderDtoInProductDto order, String code) implements Serializable {
+                         OrderDtoInProductDto order, String code, List<ProductStepDto> steps) implements Serializable {
     /**
      * DTO for {@link be.tsapasmi.factorymanagement.domain.entities.Order}
      */
