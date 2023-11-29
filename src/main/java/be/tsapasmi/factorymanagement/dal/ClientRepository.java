@@ -25,4 +25,13 @@ public interface ClientRepository extends JpaRepository<Client,Long> {
     AND p.currentStep = :productsAtStep
 """)
     List<Client> getAllActiveWithProductsAtStep(Step productsAtStep);
+
+    @Query("""
+    SELECT DISTINCT c FROM Product p
+    JOIN Order o ON p.order = o
+    JOIN Client c ON o.client = c
+    WHERE p.archived = false
+    AND p.nextStep = :productsAtNextStep
+""")
+    List<Client> getAllActiveWithProductsAtNextStep(Step productsAtNextStep);
 }

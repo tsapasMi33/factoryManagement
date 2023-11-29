@@ -30,9 +30,12 @@ public class ProductFamilyServiceImpl extends BaseServiceImpl<ProductFamily,Long
     }
 
     @Override
-    public List<ProductFamily> getAllActive(Step productsAtStep) {
+    public List<ProductFamily> getAllActive(Step productsAtStep, Step productsAtNextStep) {
         if (productsAtStep != null) {
             return repository.getAllActiveWithProductsAtStep(productsAtStep);
+        }
+        if (productsAtNextStep != null) {
+            return repository.getAllActiveWithProductsAtNextStep(productsAtNextStep);
         }
         return repository.findAllActive();
     }

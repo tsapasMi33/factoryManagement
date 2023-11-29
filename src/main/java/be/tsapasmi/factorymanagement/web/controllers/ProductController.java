@@ -43,6 +43,10 @@ public class ProductController {
     public ResponseEntity<ProductDto> getProduct(@PathVariable long id) {
         return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
+    @GetMapping("code/{orderCode:^[0-9]+$}/{productCode:^[0-9]+[.][0-9]{2}$}")
+    public ResponseEntity<ProductDto> getProductByCode(@PathVariable String orderCode,@PathVariable String productCode) {
+        return ResponseEntity.ok(mapper.toDto(service.getByCode(orderCode,productCode)));
+    }
 
     @PutMapping("/{id:^[0-9]+$}")
     public ResponseEntity<HttpStatus> updateProduct(@PathVariable long id, @Valid @RequestBody ProductForm form) {
@@ -62,15 +66,13 @@ public class ProductController {
     }
 
     @PatchMapping("/{productId:^[0-9]+$}/pause")
-    public ResponseEntity<HttpStatus> pauseStep(@PathVariable Long productId, @RequestParam Step step) {
-        service.pauseStep(step, productId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ProductDto> pauseStep(@PathVariable Long productId, @RequestParam Step step) {
+        return ResponseEntity.ok(mapper.toDto(service.pauseStep(step, productId)));
     }
 
     @PatchMapping("/{productId:^[0-9]+$}/finish")
-    public ResponseEntity<HttpStatus> finishStep(@PathVariable Long productId, @RequestParam Step step) {
-        service.finishStep(step, productId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ProductDto> finishStep(@PathVariable Long productId, @RequestParam Step step) {
+        return ResponseEntity.ok(mapper.toDto(service.finishStep(step, productId)));
     }
 
     @PatchMapping("/archive")

@@ -28,8 +28,9 @@ public class ProductFamilyController {
     }
 
     @GetMapping("/all-active")
-    public ResponseEntity<List<ProductFamilyDto>> getAllActive(@RequestParam(required = false) Step productsAtStep) {
-        return ResponseEntity.ok(mapper.toDto(service.getAllActive(productsAtStep)));
+    public ResponseEntity<List<ProductFamilyDto>> getAllActive(@RequestParam(required = false) Step productsAtStep,
+                                                               @RequestParam(required = false)Step productsAtNextStep) {
+        return ResponseEntity.ok(mapper.toDto(service.getAllActive(productsAtStep, productsAtNextStep)));
     }
 
     @GetMapping("/{id:^[0-9]+$}")

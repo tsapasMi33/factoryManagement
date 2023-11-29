@@ -42,6 +42,11 @@ public class BatchController {
         return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
+    @GetMapping("/code/{code:^[0-9]+$}")
+    public ResponseEntity<BatchDto> getBatchByCode(@PathVariable String code) {
+        return ResponseEntity.ok(mapper.toDto(service.getByCode(code)));
+    }
+
     @PostMapping("/put-in-production")
     public ResponseEntity<HttpStatus> createBatch(@Valid @RequestBody List<BatchForm> forms) {
         forms.forEach(batchForm -> service.create(mapper.toEntity(batchForm)));
@@ -60,15 +65,13 @@ public class BatchController {
     }
 
     @PatchMapping("/{batchId:^[0-9]+$}/pause")
-    public ResponseEntity<HttpStatus> pauseStep(@PathVariable Long batchId, @RequestParam Step step) {
-        service.pauseStep(step, batchId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<BatchDto> pauseStep(@PathVariable Long batchId, @RequestParam Step step) {
+        return ResponseEntity.ok(mapper.toDto(service.pauseStep(step, batchId)));
     }
 
     @PatchMapping("/{batchId:^[0-9]+$}/finish")
-    public ResponseEntity<HttpStatus> finishStep(@PathVariable Long batchId, @RequestParam Step step) {
-        service.finishStep(step, batchId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<BatchDto> finishStep(@PathVariable Long batchId, @RequestParam Step step) {
+        return ResponseEntity.ok(mapper.toDto(service.finishStep(step, batchId)));
     }
 
 }

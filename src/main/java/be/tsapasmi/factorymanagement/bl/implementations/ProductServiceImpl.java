@@ -1,5 +1,6 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
+import be.tsapasmi.factorymanagement.bl.exceptions.BadPathException;
 import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
 import be.tsapasmi.factorymanagement.bl.exceptions.SingleProductInBatchStepException;
 import be.tsapasmi.factorymanagement.bl.interfaces.*;
@@ -10,6 +11,7 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +72,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
 
-        return repository.findAll(specification, PageRequest.of(page - 1, 25));
+        return repository.findAll(specification, PageRequest.of(page - 1, 25, Sort.by("createdDate")));
     }
 
     @Override
@@ -99,7 +101,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
     }
 
     @Override
-    public void pauseStep(Step targetStep, Long productId) {
+    public Product pauseStep(Step targetStep, Long productId) {
 
         if (targetStep != Step.FINISHED) {
             throw new SingleProductInBatchStepException();
@@ -108,18 +110,18 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(productId, Product.class));
 
-        pauseStep(targetStep, product, 1);
+        return pauseStep(targetStep, product, 1);
     }
 
     @Override
-    public void pauseStep(Step targetStep, Product product, int batchSize) {
+    public Product pauseStep(Step targetStep, Product product, int batchSize) {
 
         product.getSteps().add(product.getSteps().size() - 1,productStepService.pauseStep(targetStep, product, batchSize));
-        repository.save(product);
+        return repository.save(product);
     }
 
     @Override
-    public void finishStep(Step targetStep, Long productId) {
+    public Product finishStep(Step targetStep, Long productId) {
 
         if (targetStep != Step.FINISHED) {
             throw new SingleProductInBatchStepException();
@@ -128,20 +130,26 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(productId, Product.class));
 
-        finishStep(targetStep, product, 1);
+        return finishStep(targetStep, product, 1);
     }
 
     @Override
-    public void finishStep(Step targetStep, Product product, int batchSize) {
+    public Product finishStep(Step targetStep, Product product, int batchSize) {
 
         product.getSteps().add(product.getSteps().size() - 1,productStepService.finishStep(targetStep, product, batchSize));
         doNextStep(product);
-        repository.save(product);
+        return repository.save(product);
     }
 
     @Override
     public void archiveAll() {
         repository.archiveAll();
+    }
+
+    @Override
+    public Product getByCode(String orderCode, String productCode) {
+        return repository.findByCode(orderCode, productCode)
+                .orElseThrow(BadPathException::new);
     }
 
     private void doNextStep(Product product) {

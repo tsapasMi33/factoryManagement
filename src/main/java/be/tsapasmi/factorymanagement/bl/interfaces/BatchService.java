@@ -14,9 +14,11 @@ public interface BatchService extends BaseService<Batch,Long> {
 
     Batch startStep(Step targetStep, Long batchId);
 
-    void pauseStep(Step targetStep, Long batchId);
+    Batch pauseStep(Step targetStep, Long batchId);
 
-    void finishStep(Step targetStep, Long batchId);
+    Batch finishStep(Step targetStep, Long batchId);
 
     List<Batch> getAllActive();
+
+    Batch getByCode(String code);
 }

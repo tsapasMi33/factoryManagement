@@ -27,8 +27,9 @@ public class ClientController {
     }
 
     @GetMapping("/all-active")
-    public ResponseEntity<List<ClientDto>> getAllActiveClients(@RequestParam(required = false)Step productsAtStep) {
-        return ResponseEntity.ok(mapper.toDto(service.getAllActiveClients(productsAtStep)));
+    public ResponseEntity<List<ClientDto>> getAllActiveClients(@RequestParam(required = false)Step productsAtStep,
+                                                               @RequestParam(required = false)Step productsAtNextStep) {
+        return ResponseEntity.ok(mapper.toDto(service.getAllActiveClients(productsAtStep,productsAtNextStep)));
     }
 
     @GetMapping("/{id:^[0-9]+$}")

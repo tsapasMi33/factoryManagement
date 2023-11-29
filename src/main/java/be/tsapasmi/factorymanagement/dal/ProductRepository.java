@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
@@ -24,4 +25,11 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 """)
     void archiveAll();
 
+    @Query("""
+    SELECT p FROM Product p
+    JOIN Order o ON p.order = o
+    WHERE o.code = :orderCode
+    AND p.code = :productCode
+""")
+    Optional<Product> findByCode(String orderCode, String productCode);
 }

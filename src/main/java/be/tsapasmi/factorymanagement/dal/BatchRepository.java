@@ -39,6 +39,8 @@ public interface BatchRepository extends JpaRepository<Batch,Long> {
     AND p.archived = false
 """)
     List<Batch> findAllActive();
+
+    Optional<Batch> findByCode(String code);
 }
 
 

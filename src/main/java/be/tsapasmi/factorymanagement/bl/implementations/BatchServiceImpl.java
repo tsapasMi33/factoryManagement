@@ -1,5 +1,6 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
+import be.tsapasmi.factorymanagement.bl.exceptions.BadPathException;
 import be.tsapasmi.factorymanagement.bl.exceptions.BatchInSingleProductStepException;
 import be.tsapasmi.factorymanagement.bl.exceptions.IllegalCollectionException;
 import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
@@ -73,30 +74,36 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch, Long, BatchReposito
     }
 
     @Override
-    public void pauseStep(Step targetStep, Long batchId) {
+    public Batch pauseStep(Step targetStep, Long batchId) {
         Batch batch = repository.findById(batchId)
                 .orElseThrow(() -> new ResourceNotFoundException(batchId, Batch.class));
 
         batch.getProducts()
                 .forEach(product -> productService.pauseStep(targetStep, product, batch.getProducts().size()));
 
-        repository.save(batch);
+        return repository.save(batch);
     }
 
     @Override
-    public void finishStep(Step targetStep, Long batchId) {
+    public Batch finishStep(Step targetStep, Long batchId) {
         Batch batch = repository.findById(batchId)
                 .orElseThrow(() -> new ResourceNotFoundException(batchId, Batch.class));
 
         batch.getProducts()
                 .forEach(product -> productService.finishStep(targetStep, product, batch.getProducts().size()));
 
-        repository.save(batch);
+        return repository.save(batch);
     }
 
     @Override
     public List<Batch> getAllActive() {
         return repository.findAllActive();
+    }
+
+    @Override
+    public Batch getByCode(String code) {
+        return repository.findByCode(code)
+                .orElseThrow(BadPathException::new);
     }
 
     @Override

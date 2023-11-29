@@ -25,4 +25,13 @@ public interface ProductFamilyRepository extends JpaRepository<ProductFamily,Lon
     AND p.currentStep = :productsAtStep
 """)
     List<ProductFamily> getAllActiveWithProductsAtStep(Step productsAtStep);
+
+    @Query("""
+    SELECT pf FROM ProductFamily pf
+    JOIN ProductVariant pv ON pv.productFamily = pf
+    JOIN Product p ON p.variant = pv
+    WHERE p.archived = false
+    AND p.nextStep = :productsAtNextStep
+""")
+    List<ProductFamily> getAllActiveWithProductsAtNextStep(Step productsAtNextStep);
 }

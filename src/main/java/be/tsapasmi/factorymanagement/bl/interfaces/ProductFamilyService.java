@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ProductFamilyService extends BaseService<ProductFamily,Long> {
 
-    List<ProductFamily> getAllActive(Step productsAtStep);
+    List<ProductFamily> getAllActive(Step productsAtStep, Step productsAtNextStep);
 }

@@ -19,9 +19,12 @@ public class ClientServiceImpl extends BaseServiceImpl<Client,Long, ClientReposi
         super(repo, Client.class);
     }
 
-    public List<Client> getAllActiveClients(Step productsAtStep){
+    public List<Client> getAllActiveClients(Step productsAtStep, Step productsAtNextStep){
         if (productsAtStep != null) {
             return repository.getAllActiveWithProductsAtStep(productsAtStep);
+        }
+        if (productsAtNextStep != null) {
+            return repository.getAllActiveWithProductsAtNextStep(productsAtNextStep);
         }
         return repository.getAllActive();
     }
