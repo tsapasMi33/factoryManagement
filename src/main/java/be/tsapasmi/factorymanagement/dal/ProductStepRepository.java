@@ -5,6 +5,8 @@ import be.tsapasmi.factorymanagement.domain.enums.Step;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +24,6 @@ public interface ProductStepRepository extends JpaRepository<ProductStep,Long> {
     AND ps.step = :targetStep
 """)
     Optional<ProductStep> findExistingStep(Long productId, Step targetStep);
+
+    List<ProductStep> findByCreatedDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 }
