@@ -26,4 +26,6 @@ public interface ProductStepRepository extends JpaRepository<ProductStep,Long> {
     Optional<ProductStep> findExistingStep(Long productId, Step targetStep);
 
     List<ProductStep> findByCreatedDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    List<ProductStep> findByStepAndCreatedDateBetween(Step step, LocalDateTime startDate, LocalDateTime endDate);
 }
