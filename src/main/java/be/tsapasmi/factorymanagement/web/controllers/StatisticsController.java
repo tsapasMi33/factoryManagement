@@ -23,4 +23,9 @@ public class StatisticsController {
     public ResponseEntity<StatsDto> getStatsForStep(@RequestBody StatsRequestForm form) {
         return ResponseEntity.ok(service.getStepStats(form.startDate(), form.endDate(), form.step()));
     }
+
+    @PostMapping("/production/step/user")
+    public ResponseEntity<StatsDto> getStatsForUser(@RequestBody StatsRequestForm form) {
+        return ResponseEntity.ok(service.getUserStatsForStep(form.startDate(), form.endDate(), form.step(), form.username()));
+    }
 }

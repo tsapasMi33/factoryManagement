@@ -9,4 +9,6 @@ public interface StatsService {
     StatsDto getProductionStats(LocalDate startDate, LocalDate endDate);
 
     StatsDto getStepStats(LocalDate startDate, LocalDate endDate, Step step);
+
+    StatsDto getUserStatsForStep(LocalDate localDate, LocalDate localDate1, Step step, String username);
 }

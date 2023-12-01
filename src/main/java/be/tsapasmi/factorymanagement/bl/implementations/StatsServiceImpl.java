@@ -58,4 +58,20 @@ public class StatsServiceImpl implements StatsService {
 
         return new StatsDto(r,labels,startDate,endDate);
     }
+
+    @Override
+    public StatsDto getUserStatsForStep(LocalDate startDate, LocalDate endDate, Step step, String username) {
+        List<ProductStep> steps = repository.findByCreatedBy_UsernameAndStepAndCreatedDateBetween(username,step,startDate.atTime(0,0), endDate.atTime(23,59));
+
+        var r = steps.stream()
+                .collect(Collectors.groupingBy(s -> s.getProduct().getVariant().getProductFamily().getName(),
+                        Collectors.summingInt(s -> (int) s.getProduct().getVariant().getPrice())));
+
+        List<String> labels = steps.stream()
+                .map(s -> s.getProduct().getVariant().getProductFamily().getName())
+                .distinct()
+                .toList();
+
+        return new StatsDto(r, labels, startDate, endDate);
+    }
 }

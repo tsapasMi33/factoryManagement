@@ -28,4 +28,6 @@ public interface ProductStepRepository extends JpaRepository<ProductStep,Long> {
     List<ProductStep> findByCreatedDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 
     List<ProductStep> findByStepAndCreatedDateBetween(Step step, LocalDateTime startDate, LocalDateTime endDate);
+
+    List<ProductStep> findByCreatedBy_UsernameAndStepAndCreatedDateBetween(String username, Step step, LocalDateTime startDate, LocalDateTime endDate);
 }
