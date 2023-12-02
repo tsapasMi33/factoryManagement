@@ -1,9 +1,8 @@
 package be.tsapasmi.factorymanagement.domain.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import be.tsapasmi.factorymanagement.domain.enums.Material;
+import be.tsapasmi.factorymanagement.domain.enums.PricingMethod;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,4 +21,21 @@ public class MaterialType extends BaseEntity<Long> {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private Material material;
+
+    @Enumerated(EnumType.STRING)
+    private PricingMethod pricingMethod;
+
+    private Double basePrice;
+
+    private boolean requiresCutting;
+
+    private boolean requiresBending;
+
+    private boolean hasThickness;
+
+    private boolean hasLength;
+
+    private boolean hasWidth;
 }

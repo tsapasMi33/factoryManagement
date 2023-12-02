@@ -1,7 +1,5 @@
 package be.tsapasmi.factorymanagement.domain.entities;
 
-import be.tsapasmi.factorymanagement.domain.enums.Material;
-import be.tsapasmi.factorymanagement.domain.enums.MaterialType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,11 +19,8 @@ public class Component extends BaseEntity<Long> {
 
     private String name;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
     private MaterialType type;
-
-    @Enumerated(EnumType.STRING)
-    private Material material;
 
     private Integer thickness;
 
