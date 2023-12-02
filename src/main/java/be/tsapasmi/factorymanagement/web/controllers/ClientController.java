@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,12 +38,14 @@ public class ClientController {
         return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ResponseEntity<HttpStatus> createClient(@Valid @RequestBody ClientForm form) {
         service.create(mapper.toEntity(form));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id:^[0-9]+$}")
     public ResponseEntity<HttpStatus> updateClient(@PathVariable long id,@Valid @RequestBody ClientForm form) {
         service.update(id, mapper.toEntity(form));

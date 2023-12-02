@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,12 +31,14 @@ public class ProductVariantController {
         return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ResponseEntity<HttpStatus> createProductVariant(@Valid @RequestBody ProductVariantForm form) {
         service.create(mapper.toEntity(form));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id:^[0-9]+$}")
     public ResponseEntity<HttpStatus> updateProductVariant(@PathVariable long id, @Valid @RequestBody ProductVariantForm form) {
         service.update(id, mapper.toEntity(form));

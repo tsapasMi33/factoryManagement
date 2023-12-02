@@ -6,6 +6,7 @@ public enum Role {
     BENDER,
     COMBINER,
     WELDER,
+    ASSEMBLER,
     FINISHER,
     PACKER
 }

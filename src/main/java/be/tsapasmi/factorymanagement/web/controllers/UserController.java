@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,11 +27,13 @@ public class UserController {
     private final UserMapper mapper;
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(mapper.toDto(service.getAll()));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id:^[0-9]+$}")
     public ResponseEntity<UserDto> getUser(@PathVariable long id) {
         return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
@@ -44,12 +47,14 @@ public class UserController {
         return ResponseEntity.ok(new AuthDTO(form.username(), token, user.getRole().name()));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-user")
     public ResponseEntity<HttpStatus> createUser(@Valid @RequestBody UserForm form) {
         service.create(mapper.toEntity(form));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id:^[0-9]+$}")
     public ResponseEntity<HttpStatus> updateUser(@PathVariable long id, @Valid @RequestBody UserForm form) {
         service.update(id, mapper.toEntity(form));

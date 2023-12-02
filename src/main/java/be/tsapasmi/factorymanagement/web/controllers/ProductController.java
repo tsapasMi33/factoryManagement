@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ public class ProductController {
     private final ProductService service;
     private final ProductMapper mapper;
 
+    //all
     @GetMapping("/all")
     public ResponseEntity<Page<ProductDto>> getAllProducts(
             @RequestParam int page,
@@ -39,15 +41,19 @@ public class ProductController {
                         .map(mapper::toDto));
     }
 
+    // all
     @GetMapping("/{id:^[0-9]+$}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable long id) {
         return ResponseEntity.ok(mapper.toDto(service.getOne(id)));
     }
+
+    // all
     @GetMapping("code/{orderCode:^[0-9]+$}/{productCode:^[0-9]+[.][0-9]{2}$}")
     public ResponseEntity<ProductDto> getProductByCode(@PathVariable String orderCode,@PathVariable String productCode) {
         return ResponseEntity.ok(mapper.toDto(service.getByCode(orderCode,productCode)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id:^[0-9]+$}")
     public ResponseEntity<HttpStatus> updateProduct(@PathVariable long id, @Valid @RequestBody ProductForm form) {
         service.update(id, mapper.toEntity(form));
@@ -60,21 +66,25 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{productId:^[0-9]+$}/start")
-    public ResponseEntity<ProductDto> startStep(@PathVariable Long productId, @RequestParam Step step) {
-        return ResponseEntity.ok(mapper.toDto(service.startStep(step, productId)));
+    @PreAuthorize("hasAnyRole('ADMIN','FINISHER')")
+    @PatchMapping("/{productId:^[0-9]+$}/start-finish")
+    public ResponseEntity<ProductDto> startFinishing(@PathVariable Long productId) {
+        return ResponseEntity.ok(mapper.toDto(service.startStep(Step.FINISHED, productId)));
     }
 
-    @PatchMapping("/{productId:^[0-9]+$}/pause")
-    public ResponseEntity<ProductDto> pauseStep(@PathVariable Long productId, @RequestParam Step step) {
-        return ResponseEntity.ok(mapper.toDto(service.pauseStep(step, productId)));
+    @PreAuthorize("hasAnyRole('ADMIN','FINISHER')")
+    @PatchMapping("/{productId:^[0-9]+$}/pause-finish")
+    public ResponseEntity<ProductDto> pauseFinishing(@PathVariable Long productId) {
+        return ResponseEntity.ok(mapper.toDto(service.pauseStep(Step.FINISHED, productId)));
     }
 
-    @PatchMapping("/{productId:^[0-9]+$}/finish")
-    public ResponseEntity<ProductDto> finishStep(@PathVariable Long productId, @RequestParam Step step) {
-        return ResponseEntity.ok(mapper.toDto(service.finishStep(step, productId)));
+    @PreAuthorize("hasAnyRole('ADMIN','FINISHER')")
+    @PatchMapping("/{productId:^[0-9]+$}/finish-finish")
+    public ResponseEntity<ProductDto> finishFinishing(@PathVariable Long productId) {
+        return ResponseEntity.ok(mapper.toDto(service.finishStep(Step.FINISHED, productId)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/archive")
     public ResponseEntity<HttpStatus> archiveAll() {
         service.archiveAll();
