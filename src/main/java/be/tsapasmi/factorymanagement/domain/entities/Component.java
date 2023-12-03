@@ -28,5 +28,9 @@ public class Component extends BaseEntity<Long> {
 
     private Integer width;
 
+    private boolean requiresCutting;
+
+    private boolean requiresBending;
+
     private double price;
 }

@@ -23,7 +23,8 @@ public class ComponentController {
 
     @GetMapping("/all")
     public ResponseEntity<List<ComponentDto>> getAllComponents() {
-        return ResponseEntity.ok(mapper.toDto(service.getAll()));
+        return ResponseEntity.ok(service.getAll().stream()
+                .map(mapper::toDto).toList());
     }
 
     @GetMapping("/{id:^[0-9]+$}")

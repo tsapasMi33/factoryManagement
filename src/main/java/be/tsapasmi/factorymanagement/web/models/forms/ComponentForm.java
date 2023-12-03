@@ -9,7 +9,7 @@ import java.io.Serializable;
  * DTO for {@link be.tsapasmi.factorymanagement.domain.entities.Component}
  */
 public record ComponentForm(@NotNull @NotBlank String name, Integer thickness, Integer length, Integer width,
-                            MaterialTypeIdForm type, double price) implements Serializable {
+                            MaterialTypeIdForm type, double price, boolean requiresCutting, boolean requiresBending) implements Serializable {
     /**
      * DTO for {@link be.tsapasmi.factorymanagement.domain.entities.MaterialType}
      */

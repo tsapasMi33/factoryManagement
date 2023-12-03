@@ -26,9 +26,9 @@ public class ComponentServiceImpl extends BaseServiceImpl<Component,Long, Compon
         entity.setType(materialTypeService.getOne(entity.getType().getId()));
 
         entity.setPrice( switch (entity.getType().getPricingMethod()) {
-            case METER -> entity.getType().getBasePrice() / 1000 * entity.getLength();
-            case SQUARE_METER -> entity.getType().getBasePrice() / 1000 * entity.getLength() * entity.getWidth();
-            case CUBE_METER -> entity.getType().getBasePrice() / 1000 * entity.getLength() * entity.getWidth() * entity.getThickness();
+            case METER -> entity.getType().getBasePrice() * ((double) entity.getLength() / 1000);
+            case SQUARE_METER -> entity.getType().getBasePrice() * ((double) entity.getLength() / 1000) * ((double) entity.getWidth() / 1000);
+            case CUBE_METER -> entity.getType().getBasePrice() * ((double) entity.getLength() / 1000) * ((double) entity.getWidth() / 1000) * ((double) entity.getThickness() / 100);
             case UNIT -> entity.getPrice();
         });
 

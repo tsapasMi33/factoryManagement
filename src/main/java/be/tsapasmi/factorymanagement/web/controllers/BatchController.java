@@ -1,7 +1,6 @@
 package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.BatchService;
-import be.tsapasmi.factorymanagement.domain.entities.Batch;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import be.tsapasmi.factorymanagement.web.mappers.BatchMapper;
 import be.tsapasmi.factorymanagement.web.models.forms.BatchForm;

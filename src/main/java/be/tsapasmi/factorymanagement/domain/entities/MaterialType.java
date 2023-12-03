@@ -29,10 +29,6 @@ public class MaterialType extends BaseEntity<Long> {
 
     private Double basePrice;
 
-    private boolean requiresCutting;
-
-    private boolean requiresBending;
-
     private boolean hasThickness;
 
     private boolean hasLength;

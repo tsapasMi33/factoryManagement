@@ -10,6 +10,6 @@ import java.util.List;
  * DTO for {@link be.tsapasmi.factorymanagement.domain.entities.ProductVariant}
  */
 public record ProductVariantDto(Long id, Material material, Integer width, Integer length, Integer height, String code,
-                                double price, String description, @NotNull ProductFamilyDto productFamily,
-                                @NotNull List<ComponentDto> components) implements Serializable {
+                                double price, String description, ProductFamilyDto productFamily,
+                                List<ComponentDto> components) implements Serializable {
 }

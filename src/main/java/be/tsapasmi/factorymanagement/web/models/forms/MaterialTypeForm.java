@@ -13,7 +13,6 @@ import java.io.Serializable;
  * DTO for {@link be.tsapasmi.factorymanagement.domain.entities.MaterialType}
  */
 public record MaterialTypeForm(@NotNull @NotBlank String name, @NotNull Material material,
-                               @NotNull PricingMethod pricingMethod, @Positive Double basePrice,
-                               boolean requiresCutting, boolean requiresBending, boolean hasThickness,
+                               @NotNull PricingMethod pricingMethod, @Positive Double basePrice, boolean hasThickness,
                                boolean hasLength, boolean hasWidth) implements Serializable {
 }
