@@ -51,4 +51,10 @@ public class ProductVariantController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id:^[0-9]+$}")
+    public ResponseEntity<HttpStatus> updatePrice(@PathVariable long id,@RequestParam double price) {
+        service.updatePrice(id, price);
+        return ResponseEntity.noContent().build();
+    }
+
 }

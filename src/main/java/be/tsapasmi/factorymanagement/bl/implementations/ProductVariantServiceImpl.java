@@ -45,4 +45,9 @@ public class ProductVariantServiceImpl extends BaseServiceImpl<ProductVariant,Lo
                 "]" +
                 productVariant.getVariantIdentifier().toUpperCase();
     }
+
+    @Override
+    public void updatePrice(long id,double price) {
+        repository.updatePrice(id,price);
+    }
 }
