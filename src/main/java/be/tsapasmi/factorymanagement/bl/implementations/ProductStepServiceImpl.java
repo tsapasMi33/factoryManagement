@@ -114,6 +114,7 @@ public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, Pr
         step.setFinish(LocalDateTime.now());
         step.setDuration(step.getDuration().plus(Duration.between(step.getStart(),step.getFinish())).dividedBy(batchSize));
         step.setFinished(true);
+        step.setStepCost(step.getDuration().toMinutes() * step.getCreatedBy().getCostPerMinute());
 
         return repository.save(step);
     }

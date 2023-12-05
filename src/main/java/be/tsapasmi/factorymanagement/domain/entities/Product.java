@@ -50,4 +50,6 @@ public class Product extends BaseEntity<Long> {
     private Packet packet;
 
     private boolean archived;
+
+    private double sellPrice;
 }

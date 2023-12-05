@@ -38,4 +38,6 @@ public class ProductStep extends BaseEntity<Long> {
 
     @Column(nullable = false)
     private boolean paused;
+
+    private double stepCost;
 }

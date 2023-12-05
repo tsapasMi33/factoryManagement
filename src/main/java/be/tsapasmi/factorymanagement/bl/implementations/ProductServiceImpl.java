@@ -165,6 +165,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
     @Override
     public Product create(Product entity) {
         entity.setVariant(productVariantService.getOne(entity.getVariant().getId()));
+        entity.setSellPrice(entity.getVariant().getPrice() - (entity.getVariant().getPrice() * ((double) entity.getOrder().getClient().getDiscountPercentage() / 100)));
         startStep(Step.ENCODED, entity);
         return super.create(entity);
     }
