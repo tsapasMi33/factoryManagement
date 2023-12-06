@@ -48,7 +48,7 @@ public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, Pr
                 .orElse(new ProductStep());
 
         if (step.isFinished()){
-            throw new FinishedStepException(targetStep, product);
+            step.setFinished(false);
         }
 
         step.setProduct(product);
@@ -81,12 +81,13 @@ public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, Pr
         if (!targetStep.isMeasurable()) {
             throw new IllegalActionOnStep(targetStep, "paused");
         }
-        if (step.isFinished()){
-            throw new FinishedStepException(targetStep, product);
-        }
 
         if (step.isPaused()){
             throw new PausedStepException(targetStep, product);
+        }
+
+        if (step.isFinished()){
+            throw new FinishedStepException(targetStep, product);
         }
 
         step.setDuration(Duration.between(step.getStart(),LocalDateTime.now()).dividedBy(batchSize));
@@ -103,12 +104,13 @@ public class ProductStepServiceImpl extends BaseServiceImpl<ProductStep,Long, Pr
         if (!targetStep.isMeasurable()) {
             throw  new IllegalActionOnStep(targetStep, "finished");
         }
-        if (step.isFinished()){
-            throw new FinishedStepException(targetStep, product);
-        }
 
         if (step.isPaused()){
             throw new PausedStepException(targetStep, product);
+        }
+
+        if (step.isFinished()){
+            throw new FinishedStepException(targetStep, product);
         }
 
         step.setFinish(LocalDateTime.now());

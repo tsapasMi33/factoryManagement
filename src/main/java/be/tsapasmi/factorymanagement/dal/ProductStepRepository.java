@@ -1,10 +1,12 @@
 package be.tsapasmi.factorymanagement.dal;
 
 import be.tsapasmi.factorymanagement.domain.entities.ProductStep;
+import be.tsapasmi.factorymanagement.domain.entities.ProductVariant;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,4 +32,14 @@ public interface ProductStepRepository extends JpaRepository<ProductStep,Long> {
     List<ProductStep> findByStepAndCreatedDateBetween(Step step, LocalDateTime startDate, LocalDateTime endDate);
 
     List<ProductStep> findByCreatedBy_UsernameAndStepAndCreatedDateBetween(String username, Step step, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("""
+    SELECT CAST(AVG(ps.duration) as INTEGER) FROM ProductStep ps
+    JOIN Product p ON ps.product = p
+    JOIN ProductVariant v ON p.variant = v
+    WHERE v = :v
+    AND ps.step = :step
+    AND ps.createdDate BETWEEN :startDate AND :currentDate
+""")
+    Long findAverageTimeForStep(ProductVariant v, Step step, LocalDateTime startDate, LocalDateTime currentDate);
 }

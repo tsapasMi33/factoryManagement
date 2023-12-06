@@ -43,6 +43,8 @@ public class Product extends BaseEntity<Long> {
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     private List<ProductStep> steps = new ArrayList<>(12);
 
+    private int stepCounter;
+
     @ManyToOne
     private Batch batch;
 

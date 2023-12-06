@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.dal;
 
 import be.tsapasmi.factorymanagement.domain.entities.Product;
+import be.tsapasmi.factorymanagement.domain.enums.Step;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +33,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     AND p.code = :productCode
 """)
     Optional<Product> findByCode(String orderCode, String productCode);
+
+    List<Product> findByNextStep(Step step);
 }
