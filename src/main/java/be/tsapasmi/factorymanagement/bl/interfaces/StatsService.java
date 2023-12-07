@@ -16,4 +16,6 @@ public interface StatsService {
     EvolutionDto getEvolutionStats(boolean comparison, int periodSpan);
 
     StatsDto getWorkload();
+
+    StatsDto getOverallBenefit();
 }

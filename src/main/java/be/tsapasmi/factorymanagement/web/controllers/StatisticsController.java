@@ -42,4 +42,9 @@ public class StatisticsController {
     public ResponseEntity<StatsDto> getWorkload() {
         return ResponseEntity.ok(service.getWorkload());
     }
+
+    @GetMapping("/benefit")
+    public ResponseEntity<StatsDto> getBenefit() {
+        return ResponseEntity.ok(service.getOverallBenefit());
+    }
 }

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StatsServiceImpl implements StatsService {
 
-    private final ProductRepository productRepository;
     private final ProductStepRepository repository;
 
     @Override
@@ -117,47 +116,17 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public StatsDto getWorkload() {
-        long cutHours = productRepository.findByNextStep(Step.CUT).stream()
-                .map(Product::getVariant)
-                .map(v -> repository.findAverageTimeForStep(v, Step.CUT, LocalDate.now().minusMonths(1).atStartOfDay(), LocalDate.now().atTime(23,59)))
-                .map(Duration::ofNanos)
-                .reduce(Duration.ZERO, Duration::plus)
-                .toHours();
+        long cutHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.CUT.name())).toHours();
 
-        long bendHours = productRepository.findByNextStep(Step.BENT).stream()
-                .map(Product::getVariant)
-                .map(v -> repository.findAverageTimeForStep(v, Step.BENT, LocalDate.now().minusMonths(1).atStartOfDay(), LocalDate.now().atTime(23,59)))
-                .map(Duration::ofNanos)
-                .reduce(Duration.ZERO, Duration::plus)
-                .toHours();
+        long bendHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.BENT.name())).toHours();
 
-        long combineHours = productRepository.findByNextStep(Step.COMBINED).stream()
-                .map(Product::getVariant)
-                .map(v -> repository.findAverageTimeForStep(v, Step.COMBINED, LocalDate.now().minusMonths(1).atStartOfDay(), LocalDate.now().atTime(23,59)))
-                .map(Duration::ofNanos)
-                .reduce(Duration.ZERO, Duration::plus)
-                .toHours();
+        long combineHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.COMBINED.name())).toHours();
 
-        long weldHours = productRepository.findByNextStep(Step.WELDED).stream()
-                .map(Product::getVariant)
-                .map(v -> repository.findAverageTimeForStep(v, Step.WELDED, LocalDate.now().minusMonths(1).atStartOfDay(), LocalDate.now().atTime(23,59)))
-                .map(Duration::ofNanos)
-                .reduce(Duration.ZERO, Duration::plus)
-                .toHours();
+        long weldHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.WELDED.name())).toHours();
 
-        long assembleHours = productRepository.findByNextStep(Step.ASSEMBLED).stream()
-                .map(Product::getVariant)
-                .map(v -> repository.findAverageTimeForStep(v, Step.ASSEMBLED, LocalDate.now().minusMonths(1).atStartOfDay(), LocalDate.now().atTime(23,59)))
-                .map(Duration::ofNanos)
-                .reduce(Duration.ZERO, Duration::plus)
-                .toHours();
+        long assembleHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.ASSEMBLED.name())).toHours();
 
-        long finishHours = productRepository.findByNextStep(Step.FINISHED).stream()
-                .map(Product::getVariant)
-                .map(v -> repository.findAverageTimeForStep(v, Step.FINISHED, LocalDate.now().minusMonths(1).atStartOfDay(), LocalDate.now().atTime(23,59)))
-                .map(Duration::ofNanos)
-                .reduce(Duration.ZERO, Duration::plus)
-                .toHours();
+        long finishHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.FINISHED.name())).toHours();
 
         Map<String,Integer> r = new HashMap<>();
         r.put(Step.CUT.toString(), (int) cutHours);
@@ -168,6 +137,11 @@ public class StatsServiceImpl implements StatsService {
         r.put(Step.FINISHED.toString(), (int) finishHours);
 
         List<String> labels = List.of(Step.CUT.toString(),Step.BENT.toString(),Step.COMBINED.toString(),Step.WELDED.toString(),Step.ASSEMBLED.toString(),Step.FINISHED.toString());
-        return new StatsDto(r,labels, null, null);
+        return new StatsDto(r,labels, LocalDate.now(), LocalDate.now());
+    }
+
+    @Override
+    public StatsDto getOverallBenefit() {
+        return null;
     }
 }
