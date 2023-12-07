@@ -1,11 +1,11 @@
 package be.tsapasmi.factorymanagement.bl.implementations;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.StatsService;
-import be.tsapasmi.factorymanagement.dal.ProductRepository;
 import be.tsapasmi.factorymanagement.dal.ProductStepRepository;
-import be.tsapasmi.factorymanagement.domain.entities.Product;
+import be.tsapasmi.factorymanagement.dal.projections.BenefitProjection;
 import be.tsapasmi.factorymanagement.domain.entities.ProductStep;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
+import be.tsapasmi.factorymanagement.web.models.dtos.BenefitDto;
 import be.tsapasmi.factorymanagement.web.models.dtos.EvolutionDto;
 import be.tsapasmi.factorymanagement.web.models.dtos.StatsDto;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
@@ -116,17 +115,17 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public StatsDto getWorkload() {
-        long cutHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.CUT.name())).toHours();
+        long cutHours = Duration.ofSeconds(repository.findAverageTimeForStep(Step.CUT.name())).toHours();
 
-        long bendHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.BENT.name())).toHours();
+        long bendHours = Duration.ofSeconds(repository.findAverageTimeForStep(Step.BENT.name())).toHours();
 
-        long combineHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.COMBINED.name())).toHours();
+        long combineHours = Duration.ofSeconds(repository.findAverageTimeForStep(Step.COMBINED.name())).toHours();
 
-        long weldHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.WELDED.name())).toHours();
+        long weldHours = Duration.ofSeconds(repository.findAverageTimeForStep(Step.WELDED.name())).toHours();
 
-        long assembleHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.ASSEMBLED.name())).toHours();
+        long assembleHours = Duration.ofSeconds(repository.findAverageTimeForStep(Step.ASSEMBLED.name())).toHours();
 
-        long finishHours = Duration.ofNanos(repository.findAverageTimeForStep(Step.FINISHED.name())).toHours();
+        long finishHours = Duration.ofSeconds(repository.findAverageTimeForStep(Step.FINISHED.name())).toHours();
 
         Map<String,Integer> r = new HashMap<>();
         r.put(Step.CUT.toString(), (int) cutHours);
@@ -141,7 +140,21 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public StatsDto getOverallBenefit() {
-        return null;
+    public BenefitDto getOverallBenefit() {
+        Map<String,Double> catalog = repository.getOverallCatalogPrice().stream().collect(Collectors.toMap(BenefitProjection::getName,BenefitProjection::getAverage));
+        Map<String,Double> sell = repository.getOverallSellPrice().stream().collect(Collectors.toMap(BenefitProjection::getName,BenefitProjection::getAverage));
+        Map<String,Double> cost = repository.getOverallProductionCost().stream().collect(Collectors.toMap(BenefitProjection::getName,BenefitProjection::getAverage));
+        List<String> labels = catalog.keySet().stream().toList();
+        return new BenefitDto(catalog, sell, cost, labels);
+    }
+
+    @Override
+    public BenefitDto getBenefitFor(String family) {
+        family = family.replace("-", " ");
+        Map<String,Double> catalog = repository.getOverallCatalogPriceFor(family).stream().collect(Collectors.toMap(BenefitProjection::getName,BenefitProjection::getAverage));
+        Map<String,Double> sell = repository.getOverallSellPriceFor(family).stream().collect(Collectors.toMap(BenefitProjection::getName,BenefitProjection::getAverage));
+        Map<String,Double> cost = repository.getOverallProductionCostFor(family).stream().collect(Collectors.toMap(BenefitProjection::getName,BenefitProjection::getAverage));
+        List<String> labels = catalog.keySet().stream().sorted().toList();
+        return new BenefitDto(catalog, sell, cost, labels);
     }
 }

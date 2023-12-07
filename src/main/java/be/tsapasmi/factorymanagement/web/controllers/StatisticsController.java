@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.web.controllers;
 
 import be.tsapasmi.factorymanagement.bl.interfaces.StatsService;
+import be.tsapasmi.factorymanagement.web.models.dtos.BenefitDto;
 import be.tsapasmi.factorymanagement.web.models.dtos.EvolutionDto;
 import be.tsapasmi.factorymanagement.web.models.dtos.StatsDto;
 import be.tsapasmi.factorymanagement.web.models.forms.EvolutionStatsForm;
@@ -44,7 +45,12 @@ public class StatisticsController {
     }
 
     @GetMapping("/benefit")
-    public ResponseEntity<StatsDto> getBenefit() {
+    public ResponseEntity<BenefitDto> getBenefit() {
         return ResponseEntity.ok(service.getOverallBenefit());
+    }
+
+    @GetMapping("/benefit/{family}")
+    public ResponseEntity<BenefitDto> getBenefitFor(@PathVariable String family) {
+        return ResponseEntity.ok(service.getBenefitFor(family));
     }
 }

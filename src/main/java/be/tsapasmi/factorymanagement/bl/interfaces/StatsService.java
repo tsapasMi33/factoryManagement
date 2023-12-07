@@ -1,6 +1,7 @@
 package be.tsapasmi.factorymanagement.bl.interfaces;
 
 import be.tsapasmi.factorymanagement.domain.enums.Step;
+import be.tsapasmi.factorymanagement.web.models.dtos.BenefitDto;
 import be.tsapasmi.factorymanagement.web.models.dtos.EvolutionDto;
 import be.tsapasmi.factorymanagement.web.models.dtos.StatsDto;
 
@@ -17,5 +18,7 @@ public interface StatsService {
 
     StatsDto getWorkload();
 
-    StatsDto getOverallBenefit();
+    BenefitDto getOverallBenefit();
+
+    BenefitDto getBenefitFor(String family);
 }
