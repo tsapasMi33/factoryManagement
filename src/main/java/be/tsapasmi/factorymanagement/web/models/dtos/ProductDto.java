@@ -1,8 +1,6 @@
 package be.tsapasmi.factorymanagement.web.models.dtos;
 
-import be.tsapasmi.factorymanagement.domain.enums.DeliveryPreference;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
-import lombok.Value;
 
 import java.io.Serializable;
 import java.time.LocalDate;

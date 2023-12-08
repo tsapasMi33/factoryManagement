@@ -62,7 +62,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order,Long, OrderRepositor
             }
         }
         return String.valueOf(today.getYear()) +
-                String.valueOf(today.getMonthValue() < 10 ? '0' + today.getMonthValue() : today.getMonthValue()) +
+                (today.getMonthValue() < 10 ? '0' + today.getMonthValue() : today.getMonthValue()) +
                 "0001";
     }
 }

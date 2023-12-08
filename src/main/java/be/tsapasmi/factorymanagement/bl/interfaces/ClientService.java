@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ClientService extends BaseService<Client,Long> {
 
-    public List<Client> getAllActiveClients(Step productsAtStep, Step productsAtNextStep);
+    List<Client> getAllActiveClients(Step productsAtStep, Step productsAtNextStep);
 }

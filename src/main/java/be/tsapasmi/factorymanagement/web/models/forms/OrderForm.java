@@ -4,7 +4,6 @@ import be.tsapasmi.factorymanagement.domain.enums.DeliveryPreference;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Value;
 
 import java.io.Serializable;
 import java.time.LocalDate;

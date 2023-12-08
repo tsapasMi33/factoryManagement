@@ -1,7 +1,6 @@
 package be.tsapasmi.factorymanagement.web.models.dtos;
 
 
-import be.tsapasmi.factorymanagement.domain.enums.Material;
 
 import java.io.Serializable;
 

@@ -4,7 +4,6 @@ import be.tsapasmi.factorymanagement.bl.interfaces.ComponentService;
 import be.tsapasmi.factorymanagement.bl.interfaces.MaterialTypeService;
 import be.tsapasmi.factorymanagement.dal.ComponentRepository;
 import be.tsapasmi.factorymanagement.domain.entities.Component;
-import be.tsapasmi.factorymanagement.domain.enums.PricingMethod;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 

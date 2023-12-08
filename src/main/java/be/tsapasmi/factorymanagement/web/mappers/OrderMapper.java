@@ -29,7 +29,7 @@ public interface OrderMapper {
         for (OrderForm.ProductFormInOrderForm productForm : productForms) {
             if (productForm.quantity() == 1) {
                 Product product = new Product();
-                product.setCode(String.valueOf(pCount++) + ".00");
+                product.setCode(pCount++ + ".00");
                 product.setComments(productForm.comments());
                 ProductVariant pv = new ProductVariant();
                 pv.setId(productForm.variant().id());
@@ -38,7 +38,7 @@ public interface OrderMapper {
             } else {
                 for (int i = 1; i <= productForm.quantity(); i++) {
                     Product product = new Product();
-                    product.setCode(String.valueOf(pCount) + (i < 10 ? ".0" + i : "." + i));
+                    product.setCode(pCount + (i < 10 ? ".0" + i : "." + i));
                     product.setComments(productForm.comments());
                     ProductVariant pv = new ProductVariant();
                     pv.setId(productForm.variant().id());

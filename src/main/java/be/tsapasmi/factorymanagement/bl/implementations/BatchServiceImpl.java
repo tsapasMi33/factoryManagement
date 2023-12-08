@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,8 +33,7 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch, Long, BatchReposito
         this.productService = productService;
     }
 
-    @Override
-    public Batch getLastBatch() {
+    private Batch getLastBatch() {
         return repository.getLastBatch()
                 .orElse(null);
     }

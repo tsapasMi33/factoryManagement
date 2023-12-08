@@ -4,9 +4,7 @@ import be.tsapasmi.factorymanagement.domain.entities.Product;
 import be.tsapasmi.factorymanagement.web.models.dtos.ProductDto;
 import be.tsapasmi.factorymanagement.web.models.forms.ProductForm;
 import org.mapstruct.*;
-import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {ProductVariantMapper.class, ComponentMapper.class})
 public interface ProductMapper {
