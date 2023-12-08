@@ -108,6 +108,7 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch, Long, BatchReposito
 
     @Override
     public Batch create(Batch entity) {
+
         entity.setProducts(
                 entity.getProducts().stream()
                         .map(product -> productService.getOne(product.getId()))
@@ -115,9 +116,17 @@ public class BatchServiceImpl extends BaseServiceImpl<Batch, Long, BatchReposito
         );
         entity.setCode(generateCode());
 
+        if (entity.getProducts().stream()
+                .map(p -> p.getVariant().getProductFamily())
+                .distinct()
+                .count() > 1 ) {
+            throw new IllegalCollectionException("All products in a batch must be of the same family!");
+        }
+
+
         Client client = entity.getProducts().get(0).getOrder().getClient();
         if (entity.getProducts().stream().anyMatch(product -> product.getOrder().getClient() != client)) {
-            throw new IllegalCollectionException("All Batch products must belong to the same client");
+            throw new IllegalCollectionException("All Batch products must belong to the same client!");
         }
         entity.getProducts()
                 .forEach(product -> productService.startStep(Step.PRODUCTION, product));

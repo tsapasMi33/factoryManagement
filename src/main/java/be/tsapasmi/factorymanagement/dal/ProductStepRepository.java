@@ -34,7 +34,7 @@ public interface ProductStepRepository extends JpaRepository<ProductStep, Long> 
     List<ProductStep> findByCreatedBy_UsernameAndStepAndCreatedDateBetween(String username, Step step, LocalDateTime startDate, LocalDateTime endDate);
 
     @Query(nativeQuery = true, value = """
-                SELECT COALESCE(CAST(sum(rslt2.average) AS INTEGER), 3600000000000)
+                SELECT COALESCE(CAST(sum(rslt2.average) AS INTEGER), 3600)
                   FROM
                   (
                       SELECT AVG(ps.duration) * COUNT(p.id) as "average"
