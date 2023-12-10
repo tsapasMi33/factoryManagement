@@ -1,0 +1,2 @@
+insert into public.client (discount_percentage, created_by_id, created_date, id, last_modified_by_id, last_modified_date, city, company_type, country, cp, name, number, street)
+values  (10, 1, '2023-11-15 21:22:48.618517', 1, 1, '2023-11-15 21:22:48.618517', 'X city', 'ltd', 'Belgium', '9999', 'CompanyX', '18b', 'X street');

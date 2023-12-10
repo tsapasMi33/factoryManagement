@@ -1,0 +1,2 @@
+insert into public.orders (planned_delivery_date, client_id, created_by_id, created_date, id, last_modified_by_id, last_modified_date, code, delivery_preference)
+values  ('2023-12-31', 1, 2, '2023-12-10 09:36:25.802685', 1, 2, '2023-12-10 09:36:25.802685', '2023120001', 'TRANSPORTER_OURS');

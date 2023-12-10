@@ -23,22 +23,10 @@ public interface UserRepository extends JpaRepository<User,Long> {
     void toggleUser(long userId, boolean value);
 
     @Query("""
-    SELECT COUNT(u) = 0 FROM User u
-    JOIN ProductStep ps ON ps.createdBy = u
-    JOIN Product p ON ps.product = p
-    JOIN Batch b ON p.batch = b
-    WHERE u.id = :userId
+    SELECT COUNT(ps) = 0 FROM ProductStep ps
+    WHERE ps.createdBy.id = :userId
     AND ps.finished = false
     AND ps.paused = false
-    AND 1 < (
-        SELECT COUNT(DISTINCT b.id) FROM User u
-    JOIN ProductStep ps ON ps.createdBy = u
-    JOIN Product p ON ps.product = p
-    JOIN Batch b ON p.batch = b
-    WHERE u.id = :userId
-    AND ps.finished = false
-    AND ps.paused = false
-    )
 """)
     boolean isUserAvailable(long userId);
 
