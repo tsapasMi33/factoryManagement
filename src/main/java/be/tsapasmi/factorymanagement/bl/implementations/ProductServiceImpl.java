@@ -5,7 +5,9 @@ import be.tsapasmi.factorymanagement.bl.exceptions.ResourceNotFoundException;
 import be.tsapasmi.factorymanagement.bl.exceptions.SingleProductInBatchStepException;
 import be.tsapasmi.factorymanagement.bl.interfaces.*;
 import be.tsapasmi.factorymanagement.dal.ProductRepository;
+import be.tsapasmi.factorymanagement.dal.ProductStepRepository;
 import be.tsapasmi.factorymanagement.domain.entities.Product;
+import be.tsapasmi.factorymanagement.domain.entities.ProductStep;
 import be.tsapasmi.factorymanagement.domain.enums.Step;
 import jakarta.persistence.criteria.Predicate;
 import lombok.Getter;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -26,12 +29,15 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
 
     private final ProductStepService productStepService;
     private final ProductVariantService productVariantService;
+    private final ProductStepRepository productStepRepository;
 
-    public ProductServiceImpl(ProductRepository repo, ProductStepService productStepService, ProductVariantService productVariantService) {
+    public ProductServiceImpl(ProductRepository repo, ProductStepService productStepService, ProductVariantService productVariantService,
+                              ProductStepRepository productStepRepository) {
         super(repo, Product.class);
 
         this.productStepService = productStepService;
         this.productVariantService = productVariantService;
+        this.productStepRepository = productStepRepository;
     }
 
 
@@ -138,6 +144,15 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long, ProductRe
 
         product.getSteps().add(product.getSteps().size() - 1,productStepService.finishStep(targetStep, product, batchSize));
         doNextStep(product);
+
+        Optional<ProductStep> existing =  product.getSteps().stream()
+                .filter(s -> s.getStep() == product.getNextStep())
+                .findFirst();
+
+        if (existing.isPresent()) {
+            existing.get().setFinished(false);
+            existing.get().setPaused(true);
+        }
 
         return repository.save(product);
     }

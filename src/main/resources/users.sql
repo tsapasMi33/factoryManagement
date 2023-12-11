@@ -12,7 +12,3 @@ values  (null, true, null, '1970-01-01 00:00:00.000000', 1, 1, '1970-01-01 00:00
         (0.69, true, 1, '2023-12-02 16:11:22.309842', 11, 2, '2023-12-02 16:11:22.309842', '$2a$10$8htNeLSiB6b3W.Vq8/i7d.beg3RqIzD15kUeb4AT9dW3Y8cm9ekdG', 'FINISHER', 'NunoFinisher'),
         (0, true, 1, '2023-12-02 16:11:47.592033', 12, 2, '2023-12-02 16:11:47.592033', '$2a$10$Hjf8jEaxShIHBU3APeRQ5ev4nib0R6mniHsXM.qSa5aH2VnFOhZOi', 'PACKER', 'AdrianPacker'),
         (1.2, true, 1, '2023-12-02 16:09:55.152774', 13, 2, '2023-12-02 16:09:55.152774', '$2a$10$hBWtRcOFFntyJAW4rC6vEebOnsl7k2iKKj/rXiL0f8.jhepgDZwDO', 'ASSEMBLER', 'GuntherAssembler');
-
-insert into public.client (discount_percentage, created_by_id, created_date, id, last_modified_by_id, last_modified_date, city, company_type, country, cp, name, number, street)
-values  (10, 1, '2023-11-15 21:22:48.618517', 1, 1, '2023-11-15 21:22:48.618517', 'X city', 'ltd', 'Belgium', '9999', 'CompanyX', '18b', 'X street');
-
